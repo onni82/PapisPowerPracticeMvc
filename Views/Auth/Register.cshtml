@@ -1,4 +1,10 @@
 ﻿@model PapisPowerPracticeMvc.Models.Auth.Request.RegisterUserModel
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<h2>Register</h2>
 <form asp-action="Register" method="post">
     <div class="mb-3">
         <label asp-for="Email" class="form-label">Email address</label>
@@ -7,7 +13,7 @@
     </div>
     <div class="mb-3">
         <label asp-for="Password" class="form-label">Password</label>
-        <input asp-fpr="password" type= "password" class="form-control">
+        <input asp-for="Password" type= "password" class="form-control">
         <span asp-validation-for="Password" class="text-danger"></span>
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
