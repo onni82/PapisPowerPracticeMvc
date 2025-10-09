@@ -1,3 +1,6 @@
+using PapisPowerPracticeMvc.Data.Services;
+using PapisPowerPracticeMvc.Data.Services.IService;
+
 namespace PapisPowerPracticeMvc
 {
     public class Program
@@ -8,6 +11,14 @@ namespace PapisPowerPracticeMvc
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddTransient<JwtHandler>();
+
+            builder.Services.AddHttpClient<IAuthService, AuthService>(a =>
+            {
+                a.BaseAddress = new Uri(builder.Configuration["AuthApi:BaseURL"]);
+            })
+            .AddHttpMessageHandler<JwtHandler>();
 
             var app = builder.Build();
 
@@ -24,6 +35,7 @@ namespace PapisPowerPracticeMvc
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
