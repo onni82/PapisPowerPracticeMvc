@@ -1,8 +1,23 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿<div class="container py-5 text-center app-shell">
+    <h1 class="fw-bold mb-2">PapisPowerPractice</h1>
+    <p class="text-muted mb-5">Din träningslogg, kcal-räknare, tutorials och AI-plan på ett ställe.</p>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <div class="app-grid">
+        <a class="app-tile btn btn-primary" asp-controller="Home" asp-action="Log">
+            <span class="tile-icon">🏋️‍♂️</span>
+            <span class="tile-text">Träningslogg</span>
+        </a>
+        <a class="app-tile btn btn-primary" asp-controller="Home" asp-action="Kcal">
+            <span class="tile-icon">🔥</span>
+            <span class="tile-text">Kcal-räknare</span>
+        </a>
+        <a class="app-tile btn btn-primary" asp-controller="Home" asp-action="Tutorials">
+            <span class="tile-icon">📘</span>
+            <span class="tile-text">Träningsform</span>
+        </a>
+        <a class="app-tile btn btn-primary" asp-controller="Home" asp-action="Plan">
+            <span class="tile-icon">🤖</span>
+            <span class="tile-text">AI-plan</span>
+        </a>
+    </div>
 </div>
