@@ -1,0 +1,14 @@
+﻿@model PapisPowerPracticeMvc.Models.Auth.Request.RegisterUserModel
+<form asp-action="Register" method="post">
+    <div class="mb-3">
+        <label asp-for="Email" class="form-label">Email address</label>
+        <input asp-for="Email" class="form-control">
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Password" class="form-label">Password</label>
+        <input asp-fpr="password" type= "password" class="form-control">
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
