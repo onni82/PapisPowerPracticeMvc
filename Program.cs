@@ -8,6 +8,16 @@ namespace PapisPowerPracticeMvc
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddHttpClient();
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowBackend", policy =>
+                {
+                    policy.WithOrigins("https://localhost:7202")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
 
             var app = builder.Build();
 

@@ -1,7 +1,57 @@
-﻿
+@model PapisPowerPracticeMvc.Models.WorkoutLogViewModel
 @{
-    ViewData["Title"] = "View";
+    ViewData["Title"] = "Workout Log";
 }
 
-<h1>View</h1>
+<h1>Workout Log</h1>
 
+<div class="row">
+    <div class="col-md-4">
+        <h3>Add Exercise</h3>
+        <div class="form-group">
+            <select id="exerciseSelect" class="form-control">
+                <option value="">Select an exercise...</option>
+                @foreach (var exercise in Model.AvailableExercises)
+                {
+                    <option value="@exercise.Id">@exercise.Name (@string.Join(", ", exercise.MuscleGroups.Select(mg => mg.Name)))</option>
+                }
+            </select>
+        </div>
+        <button id="addExerciseBtn" class="btn btn-primary">Add Exercise</button>
+    </div>
+    
+    <div class="col-md-8">
+        <h3>Today's Workout</h3>
+        <div id="workoutEntries">
+            <!-- Workout entries will be added here dynamically -->
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    $('#addExerciseBtn').click(function() {
+        var exerciseId = $('#exerciseSelect').val();
+        if (exerciseId) {
+            $.post('@Url.Action("AddExercise")', { exerciseId: exerciseId })
+                .done(function(data) {
+                    $('#workoutEntries').append(data);
+                    $('#exerciseSelect').val('');
+                });
+        }
+    });
+    
+    $(document).on('click', '.add-set-btn', function() {
+        var setTemplate = $(this).siblings('.set-template').html();
+        $(this).closest('.workout-entry').find('.sets-container').append(setTemplate);
+    });
+    
+    $(document).on('click', '.remove-set-btn', function() {
+        $(this).closest('.set-row').remove();
+    });
+    
+    $(document).on('click', '.remove-exercise-btn', function() {
+        $(this).closest('.workout-entry').remove();
+    });
+});
+</script>
