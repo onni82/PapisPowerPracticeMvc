@@ -13,7 +13,7 @@
                 <option value="">Select an exercise...</option>
                 @foreach (var exercise in Model.AvailableExercises)
                 {
-                    <option value="@exercise.Id">@exercise.Name (@string.Join(", ", exercise.MuscleGroups.Select(mg => mg.Name)))</option>
+                    <option value="@exercise.Id">@(exercise?.Name ?? "Unknown Exercise")</option>
                 }
             </select>
         </div>

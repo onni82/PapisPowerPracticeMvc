@@ -19,6 +19,7 @@ namespace PapisPowerPracticeMvc.Controllers
 
         public async Task<IActionResult> WorkoutLog()
         {
+
             var exercises = await GetExercisesAsync();
             var model = new WorkoutLogViewModel
             {
@@ -47,13 +48,16 @@ namespace PapisPowerPracticeMvc.Controllers
 
         private async Task<List<Exercise>> GetExercisesAsync()
         {
-            var response = await _httpClient.GetAsync("https://localhost:7202/api/exercises");
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var json = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<List<Exercise>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<Exercise>();
+                var response = await _httpClient.GetStringAsync("https://localhost:7202/api/Exercises");
+                return JsonSerializer.Deserialize<List<Exercise>>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<Exercise>();
             }
-            return new List<Exercise>();
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error: {ex.Message}");
+                return new List<Exercise>();
+            }
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
