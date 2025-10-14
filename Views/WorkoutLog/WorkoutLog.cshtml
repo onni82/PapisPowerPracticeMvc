@@ -29,29 +29,62 @@
 </div>
 
 <script>
-$(document).ready(function() {
-    $('#addExerciseBtn').click(function() {
-        var exerciseId = $('#exerciseSelect').val();
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Document ready');
+    
+    document.getElementById('addExerciseBtn').addEventListener('click', function() {
+        console.log('Button clicked');
+        const exerciseId = document.getElementById('exerciseSelect').value;
+        console.log('Exercise ID:', exerciseId);
+        
         if (exerciseId) {
-            $.post('@Url.Action("AddExercise")', { exerciseId: exerciseId })
-                .done(function(data) {
-                    $('#workoutEntries').append(data);
-                    $('#exerciseSelect').val('');
-                });
+            fetch('@Url.Action("AddExercise")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'exerciseId=' + exerciseId
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log('Success:', data);
+                document.getElementById('workoutEntries').innerHTML += data;
+                document.getElementById('exerciseSelect').value = '';
+            })
+            .catch(error => {
+                console.log('Error:', error);
+                alert('Error adding exercise');
+            });
+        } else {
+            alert('Please select an exercise');
         }
     });
     
-    $(document).on('click', '.add-set-btn', function() {
-        var setTemplate = $(this).siblings('.set-template').html();
-        $(this).closest('.workout-entry').find('.sets-container').append(setTemplate);
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('add-set-btn')) {
+            const setTemplate = e.target.parentElement.querySelector('.set-template').innerHTML;
+            e.target.closest('.workout-entry').querySelector('.sets-container').innerHTML += setTemplate;
+            
+            // Update set numbers
+            const container = e.target.closest('.workout-entry').querySelector('.sets-container');
+            const setRows = container.querySelectorAll('.set-row');
+            setRows.forEach((row, index) => {
+                const label = row.querySelector('label');
+                if (label) {
+                    label.textContent = 'Set ' + (index + 1);
+                }
+            });
+        }
+        
+        if (e.target.classList.contains('remove-set-btn')) {
+            e.target.closest('.set-row').remove();
+        }
+        
+        if (e.target.classList.contains('remove-exercise-btn')) {
+            e.target.closest('.workout-entry').remove();
+        }
     });
     
-    $(document).on('click', '.remove-set-btn', function() {
-        $(this).closest('.set-row').remove();
-    });
-    
-    $(document).on('click', '.remove-exercise-btn', function() {
-        $(this).closest('.workout-entry').remove();
-    });
+    console.log('Script loaded');
 });
 </script>

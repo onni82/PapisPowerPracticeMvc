@@ -15,7 +15,7 @@
                     <input type="number" class="form-control" placeholder="Reps" min="1">
                 </div>
                 <div class="col-md-4">
-                    <input type="number" class="form-control" placeholder="Weight (lbs)" step="0.5" min="0">
+                    <input type="number" class="form-control" placeholder="Weight (kg)" step="0.5" min="0">
                 </div>
                 <div class="col-md-2">
                     <button type="button" class="btn btn-sm btn-outline-danger remove-set-btn">×</button>
@@ -27,13 +27,13 @@
         <div class="set-template" style="display: none;">
             <div class="set-row row mb-2">
                 <div class="col-md-2">
-                    <label class="set-number">Set</label>
+                    <label>Set</label>
                 </div>
                 <div class="col-md-4">
                     <input type="number" class="form-control" placeholder="Reps" min="1">
                 </div>
                 <div class="col-md-4">
-                    <input type="number" class="form-control" placeholder="Weight (lbs)" step="0.5" min="0">
+                    <input type="number" class="form-control" placeholder="Weight (kg)" step="0.5" min="0">
                 </div>
                 <div class="col-md-2">
                     <button type="button" class="btn btn-sm btn-outline-danger remove-set-btn">×</button>
@@ -44,31 +44,37 @@
 </div>
 
 <script>
-$(document).ready(function() {
-    // Update set numbers when sets are added/removed
+document.addEventListener('DOMContentLoaded', function() {
     function updateSetNumbers(container) {
-        container.find('.set-row').each(function(index) {
-            $(this).find('.set-number, label').first().text('Set ' + (index + 1));
+        const setRows = container.querySelectorAll('.set-row');
+        setRows.forEach((row, index) => {
+            const label = row.querySelector('label');
+            if (label) {
+                label.textContent = 'Set ' + (index + 1);
+            }
         });
     }
     
-    // Update set numbers for this entry
-    var container = $('.workout-entry').last().find('.sets-container');
-    updateSetNumbers(container);
-    
-    // Update numbers when sets are added or removed
-    $(document).on('click', '.add-set-btn', function() {
-        setTimeout(function() {
-            var container = $(this).closest('.workout-entry').find('.sets-container');
-            updateSetNumbers(container);
-        }.bind(this), 10);
-    });
-    
-    $(document).on('click', '.remove-set-btn', function() {
-        var container = $(this).closest('.workout-entry').find('.sets-container');
-        setTimeout(function() {
-            updateSetNumbers(container);
-        }, 10);
+ 
+    const container = document.querySelector('.workout-entry:last-child .sets-container');
+    if (container) {
+        updateSetNumbers(container);
+    }
+
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('add-set-btn')) {
+            setTimeout(() => {
+                const container = e.target.closest('.workout-entry').querySelector('.sets-container');
+                updateSetNumbers(container);
+            }, 10);
+        }
+        
+        if (e.target.classList.contains('remove-set-btn')) {
+            setTimeout(() => {
+                const container = e.target.closest('.workout-entry').querySelector('.sets-container');
+                updateSetNumbers(container);
+            }, 10);
+        }
     });
 });
 </script>
