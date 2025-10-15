@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using PapisPowerPracticeMvc.Data.Services.IService;
 using PapisPowerPracticeMvc.Models.Auth.Request;
@@ -74,5 +75,12 @@ namespace PapisPowerPracticeMvc.Controllers
 
             return RedirectToAction("Index", "Home");
         }
+
+        //[HttpPost]
+        //public async Task<IActionResult> Logout()
+        //{
+           
+
+        //}
     }
 }
