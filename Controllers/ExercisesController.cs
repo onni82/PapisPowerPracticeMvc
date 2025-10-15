@@ -1,26 +1,25 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PapisPowerPracticeMvc.ViewModels;
+using PapisPowerPracticeMvc.Data.Services.IService;
+using PapisPowerPracticeMvc.Models;
 
 namespace PapisPowerPracticeMvc.Controllers
 {
     public class ExercisesController : Controller
     {
-        private readonly HttpClient _httpClient;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IExerciseService _exerciseService;
 
-        public ExercisesController(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
+        public ExercisesController(IExerciseService exerciseService)
         {
-            _httpClient = httpClient;
-            _httpContextAccessor = httpContextAccessor;
+            _exerciseService = exerciseService;
         }
 
         public async Task<IActionResult> Details(int id)
         {
-            var response = await _httpClient.GetFromJsonAsync<ExerciseViewModel>($"exercises/{id}");
-            if (response == null)
+            var exercise = await _exerciseService.GetExerciseByIdAsync(id);
+            if (exercise == null)
                 return NotFound();
 
-            return View(response);
+            return View(exercise);
         }
     }
 }

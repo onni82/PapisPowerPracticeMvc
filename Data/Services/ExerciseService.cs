@@ -6,10 +6,12 @@ namespace PapisPowerPracticeMvc.Data.Services
     public class ExerciseService : IExerciseService
     {
         private readonly HttpClient _httpClient;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ExerciseService(HttpClient httpClient)
+        public ExerciseService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
         {
             _httpClient = httpClient;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<ExerciseViewModel?> GetExerciseByIdAsync(int id)
