@@ -21,7 +21,22 @@
     </div>
     
     <div class="col-md-8">
-        <h3>Today's Workout</h3>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3>Today's Workout</h3>
+            <div>
+                @if (Model.WorkoutLogId.HasValue)
+                {
+                    <span>Workout In Progress</span>
+                    <form method="post" action="@Url.Action("EndWorkout")" style="display: inline;">
+                        <button type="submit" class="btn btn-danger ms-2">End Workout</button>
+                    </form>
+                }
+                else
+                {
+                    <span>No Active Workout</span>
+                }
+            </div>
+        </div>
         <div id="workoutEntries">
             <!-- Workout entries will be added here dynamically -->
         </div>
@@ -30,12 +45,9 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Document ready');
     
     document.getElementById('addExerciseBtn').addEventListener('click', function() {
-        console.log('Button clicked');
         const exerciseId = document.getElementById('exerciseSelect').value;
-        console.log('Exercise ID:', exerciseId);
         
         if (exerciseId) {
             fetch('@Url.Action("AddExercise")', {
@@ -47,12 +59,10 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(response => response.text())
             .then(data => {
-                console.log('Success:', data);
                 document.getElementById('workoutEntries').innerHTML += data;
                 document.getElementById('exerciseSelect').value = '';
             })
             .catch(error => {
-                console.log('Error:', error);
                 alert('Error adding exercise');
             });
         } else {
@@ -84,7 +94,5 @@ document.addEventListener('DOMContentLoaded', function() {
             e.target.closest('.workout-entry').remove();
         }
     });
-    
-    console.log('Script loaded');
 });
 </script>

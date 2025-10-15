@@ -31,6 +31,13 @@ namespace PapisPowerPracticeMvc.Controllers
         [HttpPost]
         public async Task<IActionResult> AddExercise(int exerciseId)
         {
+            if (HttpContext.Session.GetInt32("CurrentWorkoutId") == null)
+            {
+                var workoutId = new Random().Next(1000, 9999);
+                HttpContext.Session.SetInt32("CurrentWorkoutId", workoutId);
+                HttpContext.Session.SetString("WorkoutStartTime", DateTime.Now.ToString());
+            }
+
             var exercises = await GetExercisesAsync();
             var exercise = exercises.FirstOrDefault(e => e.Id == exerciseId);
             if (exercise != null)
@@ -44,6 +51,18 @@ namespace PapisPowerPracticeMvc.Controllers
                 return PartialView("_WorkoutEntry", entry);
             }
             return BadRequest();
+        }
+
+        [HttpPost]
+        public IActionResult EndWorkout()
+        {
+            var workoutId = HttpContext.Session.GetInt32("CurrentWorkoutId");
+            if (workoutId.HasValue)
+            {
+                HttpContext.Session.SetString("WorkoutEndTime", DateTime.Now.ToString());
+                HttpContext.Session.Remove("CurrentWorkoutId");
+            }
+            return RedirectToAction("WorkoutLog");
         }
 
         private async Task<List<Exercise>> GetExercisesAsync()
