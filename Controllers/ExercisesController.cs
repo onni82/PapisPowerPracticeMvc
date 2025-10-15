@@ -16,7 +16,7 @@ namespace PapisPowerPracticeMvc.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
-            var response = await _httpClient.GetFromJsonAsync<ExerciseViewModel>($"api/exercises/{id}");
+            var response = await _httpClient.GetFromJsonAsync<ExerciseViewModel>($"exercises/{id}");
             if (response == null)
                 return NotFound();
 
