@@ -1,23 +1,47 @@
-﻿<div class="container py-5 text-center app-shell">
-    <h1 class="fw-bold mb-2">PapisPowerPractice</h1>
-    <p class="text-muted mb-5">Din träningslogg, kcal-räknare, tutorials och AI-plan på ett ställe.</p>
+﻿@{
+    ViewData["Title"] = "PapisPowerPractice";
+}
 
-    <div class="app-grid">
-        <a class="app-tile btn btn-primary" asp-controller="Home" asp-action="Log">
-            <span class="tile-icon">🏋️‍♂️</span>
-            <span class="tile-text">Träningslogg</span>
-        </a>
-        <a class="app-tile btn btn-primary" asp-controller="Home" asp-action="Kcal">
-            <span class="tile-icon">🔥</span>
-            <span class="tile-text">Kcal-räknare</span>
-        </a>
-        <a class="app-tile btn btn-primary" asp-controller="Home" asp-action="Tutorials">
-            <span class="tile-icon">📘</span>
-            <span class="tile-text">Träningsform</span>
-        </a>
-        <a class="app-tile btn btn-primary" asp-controller="Home" asp-action="Plan">
-            <span class="tile-icon">🤖</span>
-            <span class="tile-text">AI-plan</span>
-        </a>
+<div class="container text-center py-5">
+    <h1 class="fw-bold mb-2">PapisPowerPractice</h1>
+    <p class="text-muted mb-5">
+        Din träningslogg, kcal-räknare, tutorials och AI-plan på ett ställe.
+    </p>
+
+    <div class="row justify-content-center g-4">
+        <div class="col-6">
+
+            <a asp-controller="Home" asp-action="Log" class="btn btn-primary w-100 py-4 rounded-4 shadow">
+                <div class="fs-2 mb-2">🏋️‍♂️</div>
+                <div class="fw-bold">Träningslogg</div>
+            </a>
+        </div>
+        <div class="col-6">
+
+            <a asp-controller="Home" asp-action="Kcal" class="btn btn-primary w-100 py-4 rounded-4 shadow">
+                <div class="fs-2 mb-2">🔥</div>
+                <div class="fw-bold">Kcal-räknare</div>
+            </a>
+        </div>
+        <div class="col-6">
+
+            <a asp-controller="Home" asp-action="Tutorials" class="btn btn-primary w-100 py-4 rounded-4 shadow">
+                <div class="fs-2 mb-2">📘</div>
+                <div class="fw-bold">Träningsform</div>
+            </a>
+        </div>
+        <div class="col-6">
+            <a asp-controller="Home" asp-action="Plan" class="btn btn-primary w-100 py-4 rounded-4 shadow">
+                <div class="fs-2 mb-2">🤖</div>
+                <div class="fw-bold">AI-plan</div>
+            </a>
+        </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        // slå på färg darkmode på just denna sida
+        document.body.classList.add('theme-dark');
+    </script>
+}
