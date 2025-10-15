@@ -76,11 +76,14 @@ namespace PapisPowerPracticeMvc.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> Logout()
-        //{
-           
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
 
-        //}
+            await _authService.LogoutUser();
+
+            return RedirectToAction("Index", "Home");
+
+        }
     }
 }
