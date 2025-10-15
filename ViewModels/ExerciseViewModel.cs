@@ -1,4 +1,4 @@
-﻿namespace PapisPowerPracticeMvc.Models
+﻿namespace PapisPowerPracticeMvc.ViewModels
 {
     public class ExerciseViewModel
     {
