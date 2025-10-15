@@ -1,5 +1,19 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@model PapisPowerPracticeMvc.Models.ExerciseViewModel
+
+<h2>@Model.Name</h2>
+<p>@Model.Description</p>
+
+@if (!string.IsNullOrEmpty(Model.VideoUrl))
+{
+    <div class="ratio ratio-16x9">
+        <iframe src="@Model.VideoUrl"
+                title="@Model.Name video"
+                frameborder="0"
+                allowfullscreen>
+        </iframe>
+    </div>
+}
+else
+{
+    <p>Ingen video tillgänglig.</p>
 }
