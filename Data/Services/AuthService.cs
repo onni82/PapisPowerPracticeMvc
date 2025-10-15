@@ -32,13 +32,11 @@ namespace PapisPowerPracticeMvc.Data.Services
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<bool> LogoutUser(int id)
+        public async Task<bool> LogoutUser()
         {
-            var response = await _httpClient.PostAsync($"Auth/logout/{id}", null);
-
             _httpContextAccessor.HttpContext.Response.Cookies.Delete("jwt");
 
-            return response.IsSuccessStatusCode;
+            return true;
         }
     }
 }

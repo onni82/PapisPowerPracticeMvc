@@ -6,7 +6,7 @@ namespace PapisPowerPracticeMvc.Data.Services.IService
     public interface IAuthService
     {
         Task<LoginResponse> LoginUser(LoginUserModel model);
-        Task<bool> LogoutUser(int id);
+        Task<bool> LogoutUser();
         Task<bool> RegisterUser(RegisterUserModel model);
     }
 }
