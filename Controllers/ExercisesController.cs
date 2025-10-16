@@ -16,8 +16,7 @@ namespace PapisPowerPracticeMvc.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var exercise = await _exerciseService.GetExerciseByIdAsync(id);
-            if (exercise == null)
-                return NotFound();
+            if (exercise == null) return NotFound();
 
             return View(exercise);
         }
