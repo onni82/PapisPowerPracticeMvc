@@ -49,5 +49,21 @@ namespace PapisPowerPracticeMvc.Data.Services
             }
             return null;
         }
+
+        public async Task<bool> SaveWorkoutAsync(WorkoutLog workoutLog)
+        {
+            try
+            {
+                var json = JsonSerializer.Serialize(workoutLog);
+                var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+                var response = await _httpClient.PostAsync("https://localhost:7202/api/WorkoutLogs", content);
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error saving workout: {ex.Message}");
+                return false;
+            }
+        }
     }
 }

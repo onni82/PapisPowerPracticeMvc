@@ -46,13 +46,27 @@ namespace PapisPowerPracticeMvc.Controllers
         }
 
         [HttpPost]
-        public IActionResult EndWorkout()
+        public async Task<IActionResult> EndWorkout([FromForm] string workoutData)
         {
             var workoutId = HttpContext.Session.GetInt32("CurrentWorkoutId");
-            if (workoutId.HasValue)
+            if (workoutId.HasValue && !string.IsNullOrEmpty(workoutData))
             {
-                HttpContext.Session.SetString("WorkoutEndTime", DateTime.Now.ToString());
+                var startTimeStr = HttpContext.Session.GetString("WorkoutStartTime");
+                if (DateTime.TryParse(startTimeStr, out var startTime))
+                {
+                    var workoutLog = new WorkoutLog
+                    {
+                        StartTime = startTime,
+                        EndTime = DateTime.Now,
+                        Notes = workoutData,
+                        UserId = "temp-user" // Replace with actual user ID
+                    };
+                    
+                    await _workoutLogServices.SaveWorkoutAsync(workoutLog);
+                }
+                
                 HttpContext.Session.Remove("CurrentWorkoutId");
+                HttpContext.Session.Remove("WorkoutStartTime");
             }
             return RedirectToAction("WorkoutLog");
         }

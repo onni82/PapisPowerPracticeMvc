@@ -27,7 +27,8 @@
                 @if (Model.WorkoutLogId.HasValue)
                 {
                     <span>Workout In Progress</span>
-                    <form method="post" action="@Url.Action("EndWorkout")" style="display: inline;">
+                    <form method="post" action="@Url.Action("EndWorkout")" style="display: inline;" onsubmit="collectWorkoutData(event)">
+                        <input type="hidden" name="workoutData" id="workoutDataInput">
                         <button type="submit" class="btn btn-danger ms-2">End Workout</button>
                     </form>
                 }
@@ -38,7 +39,13 @@
             </div>
         </div>
         <div id="workoutEntries">
-            <!-- Workout entries will be added here dynamically -->
+            
+        </div>
+        <div class="mt-3" id="saveWorkoutSection" style="display: none;">
+            <form method="post" action="@Url.Action("EndWorkout")" onsubmit="collectWorkoutData(event)">
+                <input type="hidden" name="workoutData" id="workoutDataInput">
+                <button type="submit" class="btn btn-success">Save Workout</button>
+            </form>
         </div>
     </div>
 </div>
@@ -61,6 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 document.getElementById('workoutEntries').innerHTML += data;
                 document.getElementById('exerciseSelect').value = '';
+                document.getElementById('saveWorkoutSection').style.display = 'block';
             })
             .catch(error => {
                 alert('Error adding exercise');
@@ -95,4 +103,24 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+function collectWorkoutData(event) {
+    const workoutEntries = [];
+    document.querySelectorAll('.workout-entry').forEach(entry => {
+        const exerciseName = entry.querySelector('h5').textContent;
+        const sets = [];
+        entry.querySelectorAll('.set-row').forEach(setRow => {
+            const reps = setRow.querySelector('input[placeholder="Reps"]').value;
+            const weight = setRow.querySelector('input[placeholder*="Weight"]').value;
+            if (reps && weight) {
+                sets.push(reps + ' reps @@ ' + weight + 'kg');
+            }
+        });
+        if (sets.length > 0) {
+            workoutEntries.push(exerciseName + ': ' + sets.join(', '));
+        }
+    });
+    
+    document.getElementById('workoutDataInput').value = workoutEntries.join('\n');
+}
 </script>
