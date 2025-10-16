@@ -1,6 +1,6 @@
 ﻿using PapisPowerPracticeMvc.Models;
 
-namespace PapisPowerPracticeMvc.Data.Services.IServices
+namespace PapisPowerPracticeMvc.Data.Services.IService
 {
     public interface IWorkoutLogServices
     {

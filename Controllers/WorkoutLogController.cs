@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PapisPowerPracticeMvc.Data.Services.IServices;
+using PapisPowerPracticeMvc.Data.Services.IService;
 using PapisPowerPracticeMvc.Models;
 using System.Diagnostics;
 
