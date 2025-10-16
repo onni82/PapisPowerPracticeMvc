@@ -13,6 +13,12 @@ namespace PapisPowerPracticeMvc.Controllers
             _exerciseService = exerciseService;
         }
 
+        public async Task<IActionResult> Index()
+        {
+            var exercises = await _exerciseService.GetAllExercisesAsync();
+            return View(exercises);
+		}
+
         public async Task<IActionResult> Details(int id)
         {
             var exercise = await _exerciseService.GetExerciseByIdAsync(id);
