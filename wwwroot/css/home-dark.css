@@ -1,0 +1,112 @@
+﻿
+body.theme-dark {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface-2: #1e242e;
+    --accent: #1768ff;
+    --accent-glow: rgba(23,104,255,.45);
+    --text-main: #e6edf3;
+    --text-muted: #9ca6b7;
+    --border-light: rgba(255,255,255,.08);
+    background: radial-gradient(circle at 20% 20%, #0e1219 0%, #0b0e13 100%);
+    color: var(--text-main);
+    min-height: 100vh;
+    transition: background-color .3s ease, color .3s ease;
+}
+
+    /* --------- Typografi & länkar --------- */
+    body.theme-dark a {
+        color: #7aa9ff;
+        text-decoration: none;
+        transition: color .2s ease;
+    }
+
+        body.theme-dark a:hover {
+            color: #a8c7ff;
+        }
+
+    /* --------- Navbar --------- */
+    body.theme-dark .navbar {
+        background: rgba(15, 17, 23, .9) !important;
+        border-bottom: 1px solid var(--border-light);
+        box-shadow: 0 2px 12px rgba(0,0,0,.4);
+        backdrop-filter: blur(8px);
+    }
+
+    body.theme-dark .navbar-brand,
+    body.theme-dark .nav-link {
+        color: var(--text-main) !important;
+    }
+
+        body.theme-dark .nav-link:hover {
+            color: var(--accent) !important;
+        }
+
+    /* --------- Footer --------- */
+    body.theme-dark .footer {
+        background: rgba(15,17,23,.9);
+        border-top: 1px solid var(--border-light);
+        color: var(--text-muted);
+    }
+
+    /* --------- Kort, panels & containers --------- */
+    body.theme-dark .card,
+    body.theme-dark .app-tile {
+        background: var(--surface);
+        color: var(--text-main);
+        border: 1px solid var(--border-light);
+        border-radius: 16px;
+        box-shadow: 0 6px 18px rgba(0,0,0,.5);
+        transition: transform .15s ease, box-shadow .15s ease;
+    }
+
+
+        /*Tile hover-effekt */
+        body.theme-dark .app-tile:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px var(--accent-glow);
+        }
+
+    /* Knappar  */
+    body.theme-dark .btn-primary {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+        box-shadow: 0 0 12px var(--accent-glow);
+        transition: transform .15s ease, box-shadow .15s ease;
+    }
+
+        body.theme-dark .btn-primary:hover {
+            background: #0f54d9;
+            transform: translateY(-1px);
+            box-shadow: 0 0 18px var(--accent-glow);
+        }
+
+   
+    body.theme-dark .form-control,
+    body.theme-dark .form-select {
+        background: var(--surface-2);
+        color: var(--text-main);
+        border: 1px solid var(--border-light);
+    }
+
+        body.theme-dark .form-control::placeholder {
+            color: var(--text-muted);
+        }
+
+    body.theme-dark .table {
+        color: var(--text-main);
+    }
+
+        body.theme-dark .table thead {
+            background: var(--surface-2);
+        }
+
+        body.theme-dark .table tbody tr:hover {
+            background: rgba(255,255,255,.05);
+        }
+
+  
+    body.theme-dark * {
+        transition: background-color .25s ease, color .25s ease, border-color .25s ease;
+    }

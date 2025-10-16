@@ -1,5 +1,6 @@
 using PapisPowerPracticeMvc.Data.Services;
-using PapisPowerPracticeMvc.Data.Services.IServices;
+using PapisPowerPracticeMvc.Data.Services.IService;
+
 namespace PapisPowerPracticeMvc
 {
     public class Program
@@ -22,6 +23,14 @@ namespace PapisPowerPracticeMvc
                           .AllowAnyMethod();
                 });
             });
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddTransient<JwtHandler>();
+
+            builder.Services.AddHttpClient<IAuthService, AuthService>(a =>
+            {
+                a.BaseAddress = new Uri(builder.Configuration["AuthApi:BaseURL"]);
+            })
+            .AddHttpMessageHandler<JwtHandler>();
 
             var app = builder.Build();
 
@@ -37,9 +46,10 @@ namespace PapisPowerPracticeMvc
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
             app.UseSession();
             app.UseAuthorization();
-
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
