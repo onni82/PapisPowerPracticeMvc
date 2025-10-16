@@ -1,29 +1,28 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PapisPowerPracticeMvc.Data.Services.IServices;
 using PapisPowerPracticeMvc.Models;
 using System.Diagnostics;
-using System.Text.Json;
 
 namespace PapisPowerPracticeMvc.Controllers
 {
     public class WorkoutLogController : Controller
     {
         private readonly ILogger<WorkoutLogController> _logger;
-        private readonly HttpClient _httpClient;
+        private readonly IWorkoutLogServices _workoutLogServices;
 
-        public WorkoutLogController(ILogger<WorkoutLogController> logger, HttpClient httpClient)
+        public WorkoutLogController(ILogger<WorkoutLogController> logger, IWorkoutLogServices workoutLogServices)
         {
             _logger = logger;
-            _httpClient = httpClient;
-            _httpClient.BaseAddress = new Uri("https://localhost:7202/api/");
+            _workoutLogServices = workoutLogServices;
         }
 
         public async Task<IActionResult> WorkoutLog()
         {
-
-            var exercises = await GetExercisesAsync();
+            var exercises = await _workoutLogServices.GetExercisesAsync();
             var model = new WorkoutLogViewModel
             {
-                AvailableExercises = exercises
+                AvailableExercises = exercises,
+                WorkoutLogId = HttpContext.Session.GetInt32("CurrentWorkoutId")
             };
             return View(model);
         }
@@ -38,16 +37,9 @@ namespace PapisPowerPracticeMvc.Controllers
                 HttpContext.Session.SetString("WorkoutStartTime", DateTime.Now.ToString());
             }
 
-            var exercises = await GetExercisesAsync();
-            var exercise = exercises.FirstOrDefault(e => e.Id == exerciseId);
-            if (exercise != null)
+            var entry = await _workoutLogServices.CreateWorkoutExerciseAsync(exerciseId);
+            if (entry != null)
             {
-                var entry = new WorkoutExerciseViewModel
-                {
-                    ExerciseId = exercise.Id,
-                    ExerciseName = exercise.Name,
-                    Sets = new List<WorkoutSetViewModel> { new WorkoutSetViewModel() }
-                };
                 return PartialView("_WorkoutEntry", entry);
             }
             return BadRequest();
@@ -65,19 +57,7 @@ namespace PapisPowerPracticeMvc.Controllers
             return RedirectToAction("WorkoutLog");
         }
 
-        private async Task<List<Exercise>> GetExercisesAsync()
-        {
-            try
-            {
-                var response = await _httpClient.GetStringAsync("https://localhost:7202/api/Exercises");
-                return JsonSerializer.Deserialize<List<Exercise>>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<Exercise>();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error: {ex.Message}");
-                return new List<Exercise>();
-            }
-        }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

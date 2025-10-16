@@ -1,3 +1,5 @@
+using PapisPowerPracticeMvc.Data.Services;
+using PapisPowerPracticeMvc.Data.Services.IServices;
 namespace PapisPowerPracticeMvc
 {
     public class Program
@@ -10,6 +12,7 @@ namespace PapisPowerPracticeMvc
             builder.Services.AddControllersWithViews();
             builder.Services.AddHttpClient();
             builder.Services.AddSession();
+            builder.Services.AddScoped<IWorkoutLogServices,WorkoutLogServices>();
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowBackend", policy =>
