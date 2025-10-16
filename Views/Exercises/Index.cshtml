@@ -1,0 +1,43 @@
+﻿@model IEnumerable<PapisPowerPracticeMvc.ViewModels.ExerciseViewModel>
+
+@{
+    ViewData["Title"] = "Träningsövningar";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Träningsövningar</h2>
+    <div class="row">
+        @foreach (var exercise in Model)
+        {
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="ratio ratio-16x9">
+                        @if (!string.IsNullOrEmpty(exercise.VideoUrl))
+                        {
+                            // Om länken är en YouTube-video, konvertera till embed-format
+                            var embedUrl = exercise.VideoUrl.Replace("watch?v=", "embed/");
+                            <iframe src="@embedUrl"
+                                    title="@exercise.Name"
+                                    allowfullscreen
+                                    class="rounded-top"></iframe>
+                        }
+                        else
+                        {
+                            <div class="bg-light d-flex align-items-center justify-content-center text-muted">
+                                Ingen video tillgänglig
+                            </div>
+                        }
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">@exercise.Name</h5>
+                        <p class="card-text text-muted">@exercise.Description</p>
+                        <p>
+                            <strong>Muskler:</strong> @string.Join(", ", exercise.MuscleGroups)
+                        </p>
+                        <a asp-action="Details" asp-route-id="@exercise.Id" class="btn btn-primary w-100">Visa mer</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
