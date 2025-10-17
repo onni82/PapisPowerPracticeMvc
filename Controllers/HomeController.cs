@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using PapisPowerPracticeMvc.Models;
+using PapisPowerPracticeMvc.ViewModels;
 
 namespace PapisPowerPracticeMvc.Controllers
 {
