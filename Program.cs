@@ -20,6 +20,11 @@ namespace PapisPowerPracticeMvc
             })
             .AddHttpMessageHandler<JwtHandler>();
 
+            builder.Services.AddHttpClient<IMuscleGroupService, MuscleGroupService>(client =>
+            {
+                client.BaseAddress = new Uri(builder.Configuration["AuthApi:BaseURL"]);
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
