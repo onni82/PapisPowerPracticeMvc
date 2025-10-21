@@ -59,7 +59,7 @@ namespace PapisPowerPracticeMvc.Controllers
                         StartTime = startTime,
                         EndTime = DateTime.Now,
                         Notes = workoutData,
-                        UserId = "temp-user" // Replace with actual user ID
+                        UserId = User.Identity?.Name ?? "anonymous"
                     };
                     
                     await _workoutLogServices.SaveWorkoutAsync(workoutLog);

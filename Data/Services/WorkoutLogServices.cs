@@ -8,18 +8,21 @@ namespace PapisPowerPracticeMvc.Data.Services
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger<WorkoutLogServices> _logger;
+        private readonly IConfiguration _configuration;
 
-        public WorkoutLogServices(HttpClient httpClient, ILogger<WorkoutLogServices> logger)
+        public WorkoutLogServices(HttpClient httpClient, ILogger<WorkoutLogServices> logger, IConfiguration configuration)
         {
             _httpClient = httpClient;
             _logger = logger;
+            _configuration = configuration;
         }
 
         public async Task<List<Exercise>> GetExercisesAsync()
         {
             try
             {
-                var response = await _httpClient.GetStringAsync("https://localhost:7202/api/Exercises");
+                var baseUrl = _configuration["ApiSettings:BaseUrl"];
+                var response = await _httpClient.GetStringAsync($"{baseUrl}/api/Exercises");
                 return JsonSerializer.Deserialize<List<Exercise>>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<Exercise>();
             }
             catch (Exception ex)
@@ -56,7 +59,8 @@ namespace PapisPowerPracticeMvc.Data.Services
             {
                 var json = JsonSerializer.Serialize(workoutLog);
                 var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-                var response = await _httpClient.PostAsync("https://localhost:7202/api/WorkoutLogs", content);
+                var baseUrl = _configuration["ApiSettings:BaseUrl"];
+                var response = await _httpClient.PostAsync($"{baseUrl}/api/WorkoutLogs", content);
                 return response.IsSuccessStatusCode;
             }
             catch (Exception ex)
