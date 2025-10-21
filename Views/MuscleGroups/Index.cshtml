@@ -1,5 +1,36 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<PapisPowerPracticeMvc.ViewModels.MuscleGroupViewModel>
+
 @{
+	ViewData["Title"] = "Muskelgrupper";
 }
+
+<div class="container mt-5">
+	<h2 class="text-center mb-4">Muskelgrupper</h2>
+
+	<div class="row">
+		@foreach (var group in Model)
+		{
+			<div class="col-md-4 mb-4">
+				<div class="card shadow-sm border-0 h-100 text-center">
+					@if (!string.IsNullOrEmpty(group.ImageUrl))
+					{
+						<img src="@group.ImageUrl" class="card-img-top" alt="@group.Name" style="height: 200px; object-fit: cover;" />
+					}
+					else
+					{
+						<div class="bg-light text-muted d-flex align-items-center justify-content-center" style="height: 200px;">
+							Ingen bild
+						</div>
+					}
+
+					<div class="card-body">
+						<h5 class="card-title">@group.Name</h5>
+						<a asp-action="Details" asp-route-id="@group.Id" class="btn btn-primary w-100 mt-3">
+							Se övningar
+						</a>
+					</div>
+				</div>
+			</div>
+		}
+	</div>
+</div>
