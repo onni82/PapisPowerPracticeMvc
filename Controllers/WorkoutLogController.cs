@@ -46,24 +46,26 @@ namespace PapisPowerPracticeMvc.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> EndWorkout([FromForm] string workoutData)
+        public async Task<IActionResult> Create([FromForm] string workoutData)
         {
-            var workoutId = HttpContext.Session.GetInt32("CurrentWorkoutId");
-            if (workoutId.HasValue && !string.IsNullOrEmpty(workoutData))
+            _logger.LogInformation($"EndWorkout called with data: {workoutData}");
+            
+            
+            if (!string.IsNullOrEmpty(workoutData))
             {
                 var startTimeStr = HttpContext.Session.GetString("WorkoutStartTime");
-                if (DateTime.TryParse(startTimeStr, out var startTime))
+                var startTime = DateTime.TryParse(startTimeStr, out var parsedStartTime) ? parsedStartTime : DateTime.Now.AddHours(-1);
+                
+                var workoutLog = new WorkoutLog
                 {
-                    var workoutLog = new WorkoutLog
-                    {
-                        StartTime = startTime,
-                        EndTime = DateTime.Now,
-                        Notes = workoutData,
-                        UserId = User.Identity?.Name ?? "anonymous"
-                    };
-                    
-                    await _workoutLogServices.SaveWorkoutAsync(workoutLog);
-                }
+                    StartTime = startTime,
+                    EndTime = DateTime.Now,
+                    Notes = workoutData,
+                    UserId = User.Identity?.Name ?? "anonymous"
+                };
+                
+                var result = await _workoutLogServices.SaveWorkoutAsync(workoutLog);
+                _logger.LogInformation($"Workout save result: {result}");
                 
                 HttpContext.Session.Remove("CurrentWorkoutId");
                 HttpContext.Session.Remove("WorkoutStartTime");
