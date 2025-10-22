@@ -4,7 +4,7 @@ namespace PapisPowerPracticeMvc.Data.Services.IService
 {
     public interface IMuscleGroupService
     {
-        Task<IEnumerable<MuscleGroupViewModel>> GetAllMuscleGroupsAsync();
-        Task<MuscleGroupViewModel?> GetMuscleGroupByIdAsync(int id);
+        Task<IEnumerable<MuscleGroupViewModel>> GetAllAsync();
+        Task<MuscleGroupViewModel?> GetByIdAsync(int id);
     }
 }
