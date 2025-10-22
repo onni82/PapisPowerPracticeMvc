@@ -1,0 +1,80 @@
+@model PapisPowerPracticeMvc.Models.WorkoutExerciseViewModel
+
+<div class="workout-entry card mb-3">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">@Model.ExerciseName</h5>
+        <button type="button" class="btn btn-sm btn-danger remove-exercise-btn">Remove</button>
+    </div>
+    <div class="card-body">
+        <div class="sets-container">
+            <div class="set-row row mb-2">
+                <div class="col-md-2">
+                    <label>Set 1</label>
+                </div>
+                <div class="col-md-4">
+                    <input type="number" class="form-control" placeholder="Reps" min="1">
+                </div>
+                <div class="col-md-4">
+                    <input type="number" class="form-control" placeholder="Weight (kg)" step="0.5" min="0">
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-sm btn-outline-danger remove-set-btn">×</button>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-primary add-set-btn">Add Set</button>
+        
+        <div class="set-template" style="display: none;">
+            <div class="set-row row mb-2">
+                <div class="col-md-2">
+                    <label>Set</label>
+                </div>
+                <div class="col-md-4">
+                    <input type="number" class="form-control" placeholder="Reps" min="1">
+                </div>
+                <div class="col-md-4">
+                    <input type="number" class="form-control" placeholder="Weight (kg)" step="0.5" min="0">
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-sm btn-outline-danger remove-set-btn">×</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function updateSetNumbers(container) {
+        const setRows = container.querySelectorAll('.set-row');
+        setRows.forEach((row, index) => {
+            const label = row.querySelector('label');
+            if (label) {
+                label.textContent = 'Set ' + (index + 1);
+            }
+        });
+    }
+    
+ 
+    const container = document.querySelector('.workout-entry:last-child .sets-container');
+    if (container) {
+        updateSetNumbers(container);
+    }
+
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('add-set-btn')) {
+            setTimeout(() => {
+                const container = e.target.closest('.workout-entry').querySelector('.sets-container');
+                updateSetNumbers(container);
+            }, 10);
+        }
+        
+        if (e.target.classList.contains('remove-set-btn')) {
+            setTimeout(() => {
+                const container = e.target.closest('.workout-entry').querySelector('.sets-container');
+                updateSetNumbers(container);
+            }, 10);
+        }
+    });
+});
+</script>

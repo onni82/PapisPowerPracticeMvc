@@ -1,0 +1,151 @@
+@model PapisPowerPracticeMvc.Models.WorkoutLogViewModel
+@{
+    ViewData["Title"] = "Workout Log";
+}
+
+<h1>Workout Log</h1>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success alert-dismissible" id="successAlert">
+        @TempData["Message"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <h3>Add Exercise</h3>
+        <div class="form-group">
+            <select id="exerciseSelect" class="form-control">
+                <option value="">Select an exercise...</option>
+                @foreach (var exercise in Model.AvailableExercises)
+                {
+                    <option value="@exercise.Id">@(exercise?.Name ?? "Unknown Exercise")</option>
+                }
+            </select>
+        </div>
+        <button id="addExerciseBtn" class="btn btn-primary">Add Exercise</button>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3>Today's Workout</h3>
+            <div>
+                @if (Model.WorkoutLogId.HasValue)
+                {
+                    <span>Workout In Progress</span>
+                    <form method="post" action="@Url.Action("EndWorkout")" style="display: inline;" onsubmit="collectWorkoutData(event)">
+                        <input type="hidden" name="workoutData" id="workoutDataInput">
+                        <button type="submit" class="btn btn-danger ms-2">End Workout</button>
+                    </form>
+                }
+                else
+                {
+                    <span>No Active Workout</span>
+                }
+            </div>
+        </div>
+        <div id="workoutEntries">
+            
+        </div>
+        <div class="mt-3" id="saveWorkoutSection" style="display: none;">
+            <form method="post" action="@Url.Action("Create")" onsubmit="collectWorkoutData(event)">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="workoutData" id="workoutDataInput2">
+                <button type="submit" class="btn btn-success">Save Workout</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-hide success alert after 3 seconds
+    const successAlert = document.getElementById('successAlert');
+    if (successAlert) {
+        setTimeout(() => {
+            successAlert.style.display = 'none';
+        }, 3000);
+    }
+    
+    document.getElementById('addExerciseBtn').addEventListener('click', function() {
+        const exerciseId = document.getElementById('exerciseSelect').value;
+        
+        if (exerciseId) {
+            fetch('@Url.Action("AddExercise")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'exerciseId=' + exerciseId
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('workoutEntries').innerHTML += data;
+                document.getElementById('exerciseSelect').value = '';
+                document.getElementById('saveWorkoutSection').style.display = 'block';
+            })
+            .catch(error => {
+                alert('Error adding exercise');
+            });
+        } else {
+            alert('Please select an exercise');
+        }
+    });
+    
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('add-set-btn')) {
+            const setTemplate = e.target.parentElement.querySelector('.set-template').innerHTML;
+            e.target.closest('.workout-entry').querySelector('.sets-container').innerHTML += setTemplate;
+            
+            const container = e.target.closest('.workout-entry').querySelector('.sets-container');
+            const setRows = container.querySelectorAll('.set-row');
+            setRows.forEach((row, index) => {
+                const label = row.querySelector('label');
+                if (label) {
+                    label.textContent = 'Set ' + (index + 1);
+                }
+            });
+        }
+        
+        if (e.target.classList.contains('remove-set-btn')) {
+            e.target.closest('.set-row').remove();
+        }
+        
+        if (e.target.classList.contains('remove-exercise-btn')) {
+            e.target.closest('.workout-entry').remove();
+        }
+    });
+});
+
+function collectWorkoutData(event) {
+    console.log('collectWorkoutData called');
+    const workoutEntries = [];
+    document.querySelectorAll('.workout-entry').forEach(entry => {
+        const exerciseName = entry.querySelector('h5').textContent;
+        const sets = [];
+        entry.querySelectorAll('.set-row').forEach(setRow => {
+            const reps = setRow.querySelector('input[placeholder="Reps"]').value;
+            const weight = setRow.querySelector('input[placeholder*="Weight"]').value;
+            if (reps && weight) {
+                sets.push(reps + ' reps @@ ' + weight + 'kg');
+            }
+        });
+        if (sets.length > 0) {
+            workoutEntries.push(exerciseName + ': ' + sets.join(', '));
+        }
+    });
+    
+    const workoutData = workoutEntries.join('\n');
+    const input1 = document.getElementById('workoutDataInput');
+    const input2 = document.getElementById('workoutDataInput2');
+    if (input1) input1.value = workoutData;
+    if (input2) input2.value = workoutData;
+    
+    console.log('Workout data collected:', workoutData);
+    console.log('Input values set:', input1?.value, input2?.value);
+    console.log('Form submitting...');
+    
+}
+</script>

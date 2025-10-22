@@ -11,6 +11,18 @@ namespace PapisPowerPracticeMvc
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddHttpClient();
+            builder.Services.AddSession();
+            builder.Services.AddScoped<IWorkoutLogServices,WorkoutLogServices>();
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowBackend", policy =>
+                {
+                    policy.WithOrigins("https://localhost:7202")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddTransient<JwtHandler>();
 
@@ -36,6 +48,7 @@ namespace PapisPowerPracticeMvc
             app.UseRouting();
 
             app.UseAuthentication();
+            app.UseSession();
             app.UseAuthorization();
             app.MapControllerRoute(
                 name: "default",
