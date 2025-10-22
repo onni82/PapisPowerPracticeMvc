@@ -12,12 +12,12 @@ namespace PapisPowerPracticeMvc.Data.Services
             _httpClient = httpClient;
         }
 
-        public async Task<IEnumerable<MuscleGroupViewModel>> GetAllMuscleGroupsAsync()
+        public async Task<IEnumerable<MuscleGroupViewModel>> GetAllAsync()
         {
             return await _httpClient.GetFromJsonAsync<IEnumerable<MuscleGroupViewModel>>("MuscleGroup") ?? new List<MuscleGroupViewModel>();
         }
 
-        public async Task<MuscleGroupViewModel?> GetMuscleGroupByIdAsync(int id)
+        public async Task<MuscleGroupViewModel?> GetByIdAsync(int id)
         {
             return await _httpClient.GetFromJsonAsync<MuscleGroupViewModel>($"MuscleGroup/{id}");
         }
