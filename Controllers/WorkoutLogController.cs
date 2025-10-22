@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PapisPowerPracticeMvc.Data.Services.IService;
 using PapisPowerPracticeMvc.Models;
+using PapisPowerPracticeMvc.ViewModels;
 using System.Diagnostics;
 
 namespace PapisPowerPracticeMvc.Controllers
