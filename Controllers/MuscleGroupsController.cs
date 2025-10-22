@@ -16,8 +16,8 @@ namespace PapisPowerPracticeMvc.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var muscleGroups = await _muscleGroupService.GetAllAsync();
-            return View(muscleGroups);
+            var groups = await _muscleGroupService.GetAllAsync();
+            return View(groups);
         }
 
         public async Task<IActionResult> Details(int id)
@@ -26,13 +26,14 @@ namespace PapisPowerPracticeMvc.Controllers
             if (group == null) return NotFound();
 
             // Hämta övningar och filtrera övningar som matchar gruppen
-            var allExercises = await _exerciseService.GetAllAsync();
-            var filteredExercises = allExercises
-                .Where(e => e.MuscleGroups != null && e.MuscleGroups.Contains(group.Name, StringComparer.OrdinalIgnoreCase))
+            var exercises = await _exerciseService.GetAllAsync();
+            var relatedExercises = exercises
+                .Where(e => e.MuscleGroups != null &&
+                        e.MuscleGroups.Any(m => string.Equals(m, group.Name, StringComparison.OrdinalIgnoreCase)))
                 .ToList();
 
             ViewBag.MuscleGroup = group;
-            return View(filteredExercises);
+            return View(relatedExercises);
         }
     }
 }
