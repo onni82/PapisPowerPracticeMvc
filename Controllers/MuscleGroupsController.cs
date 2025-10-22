@@ -16,17 +16,17 @@ namespace PapisPowerPracticeMvc.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var muscleGroups = await _muscleGroupService.GetAllMuscleGroupsAsync();
+            var muscleGroups = await _muscleGroupService.GetAllAsync();
             return View(muscleGroups);
         }
 
         public async Task<IActionResult> Details(int id)
         {
-            var group = await _muscleGroupService.GetMuscleGroupByIdAsync(id);
+            var group = await _muscleGroupService.GetByIdAsync(id);
             if (group == null) return NotFound();
 
             // Hämta övningar och filtrera övningar som matchar gruppen
-            var allExercises = await _exerciseService.GetAllExercisesAsync();
+            var allExercises = await _exerciseService.GetAllAsync();
             var filteredExercises = allExercises
                 .Where(e => e.MuscleGroups != null && e.MuscleGroups.Contains(group.Name, StringComparer.OrdinalIgnoreCase))
                 .ToList();
