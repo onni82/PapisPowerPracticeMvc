@@ -48,28 +48,34 @@ namespace PapisPowerPracticeMvc.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] string workoutData)
         {
-            _logger.LogInformation($"EndWorkout called with data: {workoutData}");
-            
+
             
             if (!string.IsNullOrEmpty(workoutData))
             {
+                _logger.LogInformation("Processing workout data...");
                 var startTimeStr = HttpContext.Session.GetString("WorkoutStartTime");
                 var startTime = DateTime.TryParse(startTimeStr, out var parsedStartTime) ? parsedStartTime : DateTime.Now.AddHours(-1);
                 
-                var workoutLog = new WorkoutLog
+                var createWorkoutLogDTO = new CreateWorkoutLogDTO
                 {
                     StartTime = startTime,
                     EndTime = DateTime.Now,
-                    Notes = workoutData,
-                    UserId = User.Identity?.Name ?? "anonymous"
+                    Notes = workoutData
                 };
                 
-                var result = await _workoutLogServices.SaveWorkoutAsync(workoutLog);
+                _logger.LogInformation($"About to call API with DTO: {System.Text.Json.JsonSerializer.Serialize(createWorkoutLogDTO)}");
+                // Get JWT token from cookies
+                var jwtToken = HttpContext.Request.Cookies["jwt"] ?? "no-token-found";
+                
+
+                
+                var result = await _workoutLogServices.SaveWorkoutAsync(createWorkoutLogDTO, jwtToken);
                 _logger.LogInformation($"Workout save result: {result}");
                 
                 HttpContext.Session.Remove("CurrentWorkoutId");
                 HttpContext.Session.Remove("WorkoutStartTime");
             }
+            TempData["Message"] = "Workout saved successfully!";
             return RedirectToAction("WorkoutLog");
         }
 

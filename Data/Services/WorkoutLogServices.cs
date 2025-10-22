@@ -53,14 +53,22 @@ namespace PapisPowerPracticeMvc.Data.Services
             return null;
         }
 
-        public async Task<bool> SaveWorkoutAsync(WorkoutLog workoutLog)
+        public async Task<bool> SaveWorkoutAsync(CreateWorkoutLogDTO createWorkoutLogDTO, string jwtToken)
         {
             try
             {
-                var json = JsonSerializer.Serialize(workoutLog);
+                var json = JsonSerializer.Serialize(createWorkoutLogDTO);
                 var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+                
+                _httpClient.DefaultRequestHeaders.Clear();
+                _httpClient.DefaultRequestHeaders.Authorization = 
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", jwtToken);
+                
                 var baseUrl = _configuration["ApiSettings:BaseUrl"];
-                var response = await _httpClient.PostAsync($"{baseUrl}/api/WorkoutLogs", content);
+                var response = await _httpClient.PostAsync($"{baseUrl}/api/WorkoutLog", content);
+                
+
+                
                 return response.IsSuccessStatusCode;
             }
             catch (Exception ex)

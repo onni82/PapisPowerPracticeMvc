@@ -5,6 +5,14 @@
 
 <h1>Workout Log</h1>
 
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success alert-dismissible" id="successAlert">
+        @TempData["Message"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
 <div class="row">
     <div class="col-md-4">
         <h3>Add Exercise</h3>
@@ -42,7 +50,8 @@
             
         </div>
         <div class="mt-3" id="saveWorkoutSection" style="display: none;">
-            <form method="post" action="@Url.Action("EndWorkout")" onsubmit="collectWorkoutData(event)">
+            <form method="post" action="@Url.Action("Create")" onsubmit="collectWorkoutData(event)">
+                @Html.AntiForgeryToken()
                 <input type="hidden" name="workoutData" id="workoutDataInput2">
                 <button type="submit" class="btn btn-success">Save Workout</button>
             </form>
@@ -52,6 +61,13 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Auto-hide success alert after 3 seconds
+    const successAlert = document.getElementById('successAlert');
+    if (successAlert) {
+        setTimeout(() => {
+            successAlert.style.display = 'none';
+        }, 3000);
+    }
     
     document.getElementById('addExerciseBtn').addEventListener('click', function() {
         const exerciseId = document.getElementById('exerciseSelect').value;
@@ -83,7 +99,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const setTemplate = e.target.parentElement.querySelector('.set-template').innerHTML;
             e.target.closest('.workout-entry').querySelector('.sets-container').innerHTML += setTemplate;
             
-            // Update set numbers
             const container = e.target.closest('.workout-entry').querySelector('.sets-container');
             const setRows = container.querySelectorAll('.set-row');
             setRows.forEach((row, index) => {
@@ -129,7 +144,8 @@ function collectWorkoutData(event) {
     if (input2) input2.value = workoutData;
     
     console.log('Workout data collected:', workoutData);
+    console.log('Input values set:', input1?.value, input2?.value);
     console.log('Form submitting...');
-    return true;
+    
 }
 </script>
