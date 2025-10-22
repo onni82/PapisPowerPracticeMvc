@@ -37,7 +37,12 @@ namespace PapisPowerPracticeMvc
                 client.BaseAddress = new Uri(builder.Configuration["AuthApi:BaseURL"]);
             });
 
-            var app = builder.Build();
+            builder.Services.AddHttpClient<IExerciseService, ExerciseService>(client =>
+            {
+                client.BaseAddress = new Uri(builder.Configuration["AuthApi:BaseURL"]);
+            });
+
+			var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
