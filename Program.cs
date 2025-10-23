@@ -27,6 +27,7 @@ namespace PapisPowerPracticeMvc
 			builder.Services.AddHttpContextAccessor();
 			builder.Services.AddTransient<JwtHandler>();
 
+			// Registrerar Http-klienter
 			builder.Services.AddHttpClient<IAuthService, AuthService>(a =>
 			{
 				a.BaseAddress = new Uri(builder.Configuration["AuthApi:BaseURL"]);
@@ -45,6 +46,7 @@ namespace PapisPowerPracticeMvc
 			})
 			.AddHttpMessageHandler<JwtHandler>();
 
+			// Lägger till cookie-autentisering
 			builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 				.AddCookie(options =>
 				{
@@ -74,6 +76,7 @@ namespace PapisPowerPracticeMvc
 			app.UseSession();
 			app.UseAuthorization();
 
+			// Lägger till area routing for admin
 			app.MapControllerRoute(
 				name: "areas",
 				pattern: "{area:exists}/{controller=home}/{action=Index}/{id?}"
