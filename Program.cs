@@ -49,13 +49,39 @@ namespace PapisPowerPracticeMvc
 			})
 			.AddHttpMessageHandler<JwtHandler>();
 
-			// Lägger till cookie-autentisering
-			builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-				.AddCookie(options =>
+			// JWT-autentisering
+			builder.Services.AddAuthentication(options =>
+			{
+				options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+				options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+			})
+			.AddJwtBearer(options =>
+			{
+				options.TokenValidationParameters = new TokenValidationParameters
 				{
-					options.LoginPath = "/Auth/Login";
-					options.AccessDeniedPath = "/Auth/Login";
-				});
+					ValidateIssuer = false,
+					ValidateAudience = false,
+					ValidateLifetime = false,
+					ValidateIssuerSigningKey = false,
+					IssuerSigningKey = new SymmetricSecurityKey(
+						Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"]!)
+					)
+				};
+
+				// Få ASP.NET att läsa JWT från cookien som heter jwt
+				options.Events = new JwtBearerEvents
+				{
+					OnMessageReceived = context =>
+					{
+						var token = context.HttpContext.Request.Cookies["jwt"];
+						if (!string.IsNullOrEmpty(token))
+						{
+							context.Token = token;
+						}
+						return Task.CompletedTask;
+					}
+				};
+			});
 
 			builder.Services.AddAuthorization();
 
