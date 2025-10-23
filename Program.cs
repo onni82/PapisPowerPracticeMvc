@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using PapisPowerPracticeMvc.Data.Services;
 using PapisPowerPracticeMvc.Data.Services.IService;
 
@@ -44,6 +45,15 @@ namespace PapisPowerPracticeMvc
 			})
 			.AddHttpMessageHandler<JwtHandler>();
 
+			builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+				.AddCookie(options =>
+				{
+					options.LoginPath = "/Auth/Login";
+					options.AccessDeniedPath = "/Auth/Login";
+				});
+
+			builder.Services.AddAuthorization();
+
 			var app = builder.Build();
 
 			// Configure the HTTP request pipeline.
@@ -58,10 +68,16 @@ namespace PapisPowerPracticeMvc
 			app.UseStaticFiles();
 
 			app.UseRouting();
+			app.UseCors("AllowBackend");
 
 			app.UseAuthentication();
 			app.UseSession();
 			app.UseAuthorization();
+
+			app.MapControllerRoute(
+				name: "areas",
+				pattern: "{area:exists}/{controller=home}/{action=Index}/{id?}"
+			);
 			app.MapControllerRoute(
 				name: "default",
 				pattern: "{controller=Home}/{action=Index}/{id?}");
