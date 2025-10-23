@@ -71,7 +71,15 @@ namespace PapisPowerPracticeMvc.Controllers
                 Expires = DateTime.UtcNow.AddHours(1)
             }); 
 
-            
+            // Dekoda JWT och hämta roll
+            var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+            var token = handler.ReadJwtToken(response.AccessToken);
+            var role = token.Claims.FirstOrDefault(c => c.Type == "role" || c.Type == "roles")?.Value;
+
+            // Omdirigera beroende på roll
+            if (role == null) {
+                return RedirectToAction("Index", "Home", new { area = "Admin" });
+            }
 
             return RedirectToAction("Index", "Home");
         }
