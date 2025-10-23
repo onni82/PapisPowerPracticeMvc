@@ -77,7 +77,7 @@ namespace PapisPowerPracticeMvc.Controllers
             var role = token.Claims.FirstOrDefault(c => c.Type == "role" || c.Type == "roles")?.Value;
 
             // Omdirigera beroende på roll
-            if (role == null) {
+            if (role != null && role.Equals("Admin", StringComparison.OrdinalIgnoreCase)) {
                 return RedirectToAction("Index", "Home", new { area = "Admin" });
             }
 
@@ -87,11 +87,8 @@ namespace PapisPowerPracticeMvc.Controllers
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
-
             await _authService.LogoutUser();
-
             return RedirectToAction("Index", "Home");
-
         }
     }
 }
