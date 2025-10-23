@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using PapisPowerPracticeMvc.Data.Services;
 using PapisPowerPracticeMvc.Data.Services.IService;
+using System.Text;
 
 namespace PapisPowerPracticeMvc
 {
