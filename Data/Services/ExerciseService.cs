@@ -14,12 +14,12 @@ namespace PapisPowerPracticeMvc.Data.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<IEnumerable<ExerciseViewModel>> GetAllExercisesAsync()
+        public async Task<IEnumerable<ExerciseViewModel>> GetAllAsync()
         {
             return await _httpClient.GetFromJsonAsync<IEnumerable<ExerciseViewModel>>("exercises") ?? new List<ExerciseViewModel>();
 		}
 
-        public async Task<ExerciseViewModel?> GetExerciseByIdAsync(int id)
+        public async Task<ExerciseViewModel?> GetByIdAsync(int id)
         {
             return await _httpClient.GetFromJsonAsync<ExerciseViewModel>($"exercises/{id}");
         }

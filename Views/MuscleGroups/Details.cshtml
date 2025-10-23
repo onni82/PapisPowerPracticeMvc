@@ -1,0 +1,41 @@
+﻿@model IEnumerable<PapisPowerPracticeMvc.ViewModels.ExerciseViewModel>
+
+@{
+	var group = ViewBag.MuscleGroup as PapisPowerPracticeMvc.ViewModels.MuscleGroupViewModel;
+	ViewData["Title"] = $"{group?.Name}övningar";
+}
+
+<div class="container mt-5">
+	<h2 class="mb-4 text-center">@group?.Name Exercises</h2>
+
+	<div class="row">
+		@foreach (var exercise in Model)
+		{
+			<div class="col-md-6 col-lg-4 mb-4">
+				<div class="card shadow-sm border-0 h-100">
+					<div class="ratio ratio-16x9">
+						@if (!string.IsNullOrEmpty(exercise.VideoUrl))
+						{
+							var embedUrl = exercise.VideoUrl.Replace("watch?v=", "embed/");
+							<iframe src="@embedUrl" title="@exercise.Name" allowfullscreen class="rounded-top"></iframe>
+						}
+						else
+						{
+							<div class="bg-light d-flex align-items-center justify-content-center text-muted">
+								Ingen video
+							</div>
+						}
+						<div class="card-body">
+							<h5 class="card-title">@exercise.Name</h5>
+							<p class="text-muted">@exercise.Description</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		}
+	</div>
+
+	<div class="mt-4 text-center">
+		<a asp-action="Index" class="btn btn-secondary">Återgå till muskelgrupper</a>
+	</div>
+</div>
