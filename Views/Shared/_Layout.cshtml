@@ -44,7 +44,7 @@
                         @if (Context.Request.Cookies.ContainsKey("jwt"))
                         {
                             <li class="nav-item">
-                                <form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">
+                                <form asp-area="" asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">
                                 <button type="submit" class="nav-link btn btn-link text-dark" style="text-decoration: none;">
                                     Logout
                                     </button>
