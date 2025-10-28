@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using PapisPowerPracticeMvc.Data.Services;
 using PapisPowerPracticeMvc.Data.Services.IService;
+using System.Security.Claims;
 using System.Text;
 
 namespace PapisPowerPracticeMvc
@@ -100,6 +101,27 @@ namespace PapisPowerPracticeMvc
 
 			app.UseRouting();
 			app.UseCors("AllowBackend");
+
+			app.Use(async (context, next) =>
+			{
+				var token = context.Request.Cookies["jwt"];
+
+				if (!string.IsNullOrEmpty(token))
+				{
+					var tokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+					try
+					{
+						var jwtToken = tokenHandler.ReadJwtToken(token);
+						var identity = new ClaimsIdentity(jwtToken.Claims, "jwt");
+						context.User = new ClaimsPrincipal(identity);
+					}
+					catch
+					{
+						// Ignorera om token inte är giltig
+					}
+				}
+				await next();
+			});
 
 			app.UseAuthentication();
 			app.UseSession();
