@@ -1,0 +1,17 @@
+﻿@{
+	ViewData["Title"] = "Adminportal";
+}
+
+<div class="container m-5">
+	<h2>Välkommen till Adminportalen</h2>
+	<p>Här kan du hantera muskelgrupper och övningar.</p>
+
+	<div class="mt-4">
+		<a asp-area="Admin" asp-controller="MuscleGroup" asp-action="Index" class="btn btn-outline-primary me-2">
+			Hantera muskelgrupper
+		</a>
+		<a asp-area="Admin" asp-controller="Exercise" asp-action="Index" class="btn btn-outline-secondary">
+			Hantera övningar
+		</a>
+	</div>
+</div>

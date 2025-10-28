@@ -38,16 +38,23 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="WorkoutLog" asp-action="WorkoutLog">Workout Log</a>
                         </li>
+
+                        @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="Admin" asp-controller="Home" asp-action="Index">Adminportal</a>
+                            </li>
+                        }
                     </ul>
 
                     <ul class="navbar-nav ms-auto">
                         @if (Context.Request.Cookies.ContainsKey("jwt"))
                         {
                             <li class="nav-item">
-                                <form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">
+                                <form asp-area="" asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">
                                 <button type="submit" class="nav-link btn btn-link text-dark" style="text-decoration: none;">
                                     Logout
-                                    </button>
+                                </button>
                                 </form>
                             </li>
                         }
@@ -57,7 +64,6 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Login">Login</a>
                             </li>
                         }
-                        
                     </ul>
                 </div>
             </div>

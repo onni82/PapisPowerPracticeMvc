@@ -1,5 +1,10 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using PapisPowerPracticeMvc.Data.Services;
 using PapisPowerPracticeMvc.Data.Services.IService;
+using System.Security.Claims;
+using System.Text;
 
 namespace PapisPowerPracticeMvc
 {
@@ -26,6 +31,7 @@ namespace PapisPowerPracticeMvc
 			builder.Services.AddHttpContextAccessor();
 			builder.Services.AddTransient<JwtHandler>();
 
+			// Registrerar Http-klienter
 			builder.Services.AddHttpClient<IAuthService, AuthService>(a =>
 			{
 				a.BaseAddress = new Uri(builder.Configuration["AuthApi:BaseURL"]);
@@ -44,6 +50,42 @@ namespace PapisPowerPracticeMvc
 			})
 			.AddHttpMessageHandler<JwtHandler>();
 
+			// JWT-autentisering
+			builder.Services.AddAuthentication(options =>
+			{
+				options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+				options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+			})
+			.AddJwtBearer(options =>
+			{
+				options.TokenValidationParameters = new TokenValidationParameters
+				{
+					ValidateIssuer = false,
+					ValidateAudience = false,
+					ValidateLifetime = false,
+					ValidateIssuerSigningKey = false,
+					IssuerSigningKey = new SymmetricSecurityKey(
+						Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"]!)
+					)
+				};
+
+				// Få ASP.NET att läsa JWT från cookien som heter jwt
+				options.Events = new JwtBearerEvents
+				{
+					OnMessageReceived = context =>
+					{
+						var token = context.HttpContext.Request.Cookies["jwt"];
+						if (!string.IsNullOrEmpty(token))
+						{
+							context.Token = token;
+						}
+						return Task.CompletedTask;
+					}
+				};
+			});
+
+			builder.Services.AddAuthorization();
+
 			var app = builder.Build();
 
 			// Configure the HTTP request pipeline.
@@ -58,10 +100,38 @@ namespace PapisPowerPracticeMvc
 			app.UseStaticFiles();
 
 			app.UseRouting();
+			app.UseCors("AllowBackend");
+
+			app.Use(async (context, next) =>
+			{
+				var token = context.Request.Cookies["jwt"];
+
+				if (!string.IsNullOrEmpty(token))
+				{
+					var tokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+					try
+					{
+						var jwtToken = tokenHandler.ReadJwtToken(token);
+						var identity = new ClaimsIdentity(jwtToken.Claims, "jwt");
+						context.User = new ClaimsPrincipal(identity);
+					}
+					catch
+					{
+						// Ignorera om token inte är giltig
+					}
+				}
+				await next();
+			});
 
 			app.UseAuthentication();
 			app.UseSession();
 			app.UseAuthorization();
+
+			// Lägger till area routing for admin
+			app.MapControllerRoute(
+				name: "areas",
+				pattern: "{area:exists}/{controller=home}/{action=Index}/{id?}"
+			);
 			app.MapControllerRoute(
 				name: "default",
 				pattern: "{controller=Home}/{action=Index}/{id?}");
