@@ -6,5 +6,6 @@ namespace PapisPowerPracticeMvc.Data.Services.IService
     {
         Task<IEnumerable<MuscleGroupViewModel>> GetAllAsync();
         Task<MuscleGroupViewModel?> GetByIdAsync(int id);
+        Task<bool> CreateAsync(MuscleGroupViewModel muscleGroup);
     }
 }
