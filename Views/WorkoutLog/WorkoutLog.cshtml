@@ -16,16 +16,23 @@
 <div class="row">
     <div class="col-md-4">
         <h3>Add Exercise</h3>
-        <div class="form-group">
-            <select id="exerciseSelect" class="form-control">
-                <option value="">Select an exercise...</option>
-                @foreach (var exercise in Model.AvailableExercises)
+        <div class="form-group mb-3">
+            <label>Select Muscle Group:</label>
+            <select id="muscleGroupSelect" class="form-control">
+                <option value="">Select a muscle group...</option>
+                @foreach (var muscleGroup in Model.MuscleGroups)
                 {
-                    <option value="@exercise.Id">@(exercise?.Name ?? "Unknown Exercise")</option>
+                    <option value="@muscleGroup.Id">@muscleGroup.Name</option>
                 }
             </select>
         </div>
-        <button id="addExerciseBtn" class="btn btn-primary">Add Exercise</button>
+        <div class="form-group mb-3">
+            <label>Select Exercise:</label>
+            <select id="exerciseSelect" class="form-control" disabled>
+                <option value="">Select a muscle group first...</option>
+            </select>
+        </div>
+        <button id="addExerciseBtn" class="btn btn-primary" disabled>Add Exercise</button>
     </div>
     
     <div class="col-md-8">
@@ -68,6 +75,39 @@ document.addEventListener('DOMContentLoaded', function() {
             successAlert.style.display = 'none';
         }, 3000);
     }
+    
+    // Handle muscle group selection
+    document.getElementById('muscleGroupSelect').addEventListener('change', function() {
+        const muscleGroupId = this.value;
+        const exerciseSelect = document.getElementById('exerciseSelect');
+        const addExerciseBtn = document.getElementById('addExerciseBtn');
+        
+        if (muscleGroupId) {
+            fetch(`@Url.Action("GetExercisesByMuscleGroup")?muscleGroupId=${muscleGroupId}`)
+                .then(response => response.json())
+                .then(exercises => {
+                    exerciseSelect.innerHTML = '<option value="">Select an exercise...</option>';
+                    exercises.forEach(exercise => {
+                        exerciseSelect.innerHTML += `<option value="${exercise.id}">${exercise.name}</option>`;
+                    });
+                    exerciseSelect.disabled = false;
+                })
+                .catch(error => {
+                    console.error('Error loading exercises:', error);
+                    exerciseSelect.innerHTML = '<option value="">Error loading exercises</option>';
+                });
+        } else {
+            exerciseSelect.innerHTML = '<option value="">Select a muscle group first...</option>';
+            exerciseSelect.disabled = true;
+            addExerciseBtn.disabled = true;
+        }
+    });
+    
+    // Handle exercise selection
+    document.getElementById('exerciseSelect').addEventListener('change', function() {
+        const addExerciseBtn = document.getElementById('addExerciseBtn');
+        addExerciseBtn.disabled = !this.value;
+    });
     
     document.getElementById('addExerciseBtn').addEventListener('click', function() {
         const exerciseId = document.getElementById('exerciseSelect').value;
