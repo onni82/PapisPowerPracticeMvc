@@ -7,5 +7,8 @@ namespace PapisPowerPracticeMvc.Data.Services.IService
     {
         Task<IEnumerable<ExerciseViewModel>> GetAllAsync();
         Task<ExerciseViewModel?> GetByIdAsync(int id);
+        Task<List<Exercise>> GetExercisesForWorkoutAsync();
+        Task<List<MuscleGroup>> GetMuscleGroupsAsync();
+        Task<List<Exercise>> GetExercisesByMuscleGroupAsync(int muscleGroupId);
     }
 }

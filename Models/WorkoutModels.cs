@@ -52,6 +52,7 @@ namespace PapisPowerPracticeMvc.Models
     {
         public int? WorkoutLogId { get; set; }
         public List<Exercise> AvailableExercises { get; set; } = new List<Exercise>();
+        public List<MuscleGroup> MuscleGroups { get; set; } = new List<MuscleGroup>();
         public List<WorkoutExerciseViewModel> WorkoutExercises { get; set; } = new List<WorkoutExerciseViewModel>();
         public string? Notes { get; set; }
     }

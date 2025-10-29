@@ -7,10 +7,12 @@ namespace PapisPowerPracticeMvc.Controllers
     public class ExercisesController : Controller
     {
         private readonly IExerciseService _exerciseService;
+        private readonly ILogger<ExercisesController> _logger;
 
-        public ExercisesController(IExerciseService exerciseService)
+        public ExercisesController(IExerciseService exerciseService, ILogger<ExercisesController> logger)
         {
             _exerciseService = exerciseService;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index()

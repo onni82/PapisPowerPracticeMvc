@@ -10,22 +10,48 @@ namespace PapisPowerPracticeMvc.Controllers
     {
         private readonly ILogger<WorkoutLogController> _logger;
         private readonly IWorkoutLogServices _workoutLogServices;
+        private readonly IExerciseService _exerciseService;
+        private readonly IMuscleGroupService _muscleGroupService;
 
-        public WorkoutLogController(ILogger<WorkoutLogController> logger, IWorkoutLogServices workoutLogServices)
+        public WorkoutLogController(ILogger<WorkoutLogController> logger, IWorkoutLogServices workoutLogServices, IExerciseService exerciseService, IMuscleGroupService muscleGroupService)
         {
             _logger = logger;
             _workoutLogServices = workoutLogServices;
+            _exerciseService = exerciseService;
+            _muscleGroupService = muscleGroupService;
         }
 
         public async Task<IActionResult> WorkoutLog()
         {
-            var exercises = await _workoutLogServices.GetExercisesAsync();
+            var muscleGroupViewModels = await _muscleGroupService.GetAllAsync();
+            var muscleGroups = muscleGroupViewModels.Select(mg => new MuscleGroup
+            {
+                Id = mg.Id,
+                Name = mg.Name
+            }).ToList();
+            
             var model = new WorkoutLogViewModel
             {
-                AvailableExercises = exercises,
+                AvailableExercises = new List<Exercise>(),
+                MuscleGroups = muscleGroups,
                 WorkoutLogId = HttpContext.Session.GetInt32("CurrentWorkoutId")
             };
             return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetExercisesByMuscleGroup(int muscleGroupId)
+        {
+            // Get the muscle group name first
+            var muscleGroups = await _muscleGroupService.GetAllAsync();
+            var selectedMuscleGroup = muscleGroups.FirstOrDefault(mg => mg.Id == muscleGroupId);
+            
+            if (selectedMuscleGroup == null)
+                return Json(new List<object>());
+            
+            var allExercises = await _exerciseService.GetAllAsync();
+            var filteredExercises = allExercises.Where(e => e.MuscleGroups != null && e.MuscleGroups.Contains(selectedMuscleGroup.Name));
+            return Json(filteredExercises.Select(e => new { id = e.Id, name = e.Name }));
         }
 
         [HttpPost]
@@ -38,9 +64,17 @@ namespace PapisPowerPracticeMvc.Controllers
                 HttpContext.Session.SetString("WorkoutStartTime", DateTime.Now.ToString());
             }
 
-            var entry = await _workoutLogServices.CreateWorkoutExerciseAsync(exerciseId);
-            if (entry != null)
+            var exercises = await _exerciseService.GetAllAsync();
+            var exercise = exercises.FirstOrDefault(e => e.Id == exerciseId);
+            
+            if (exercise != null)
             {
+                var entry = new WorkoutExerciseViewModel
+                {
+                    ExerciseId = exercise.Id,
+                    ExerciseName = exercise.Name,
+                    Sets = new List<WorkoutSetViewModel> { new WorkoutSetViewModel() }
+                };
                 return PartialView("_WorkoutEntry", entry);
             }
             return BadRequest();
