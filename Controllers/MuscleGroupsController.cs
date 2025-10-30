@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PapisPowerPracticeMvc.Data.Services.IService;
+using PapisPowerPracticeMvc.ViewModels;
 
 namespace PapisPowerPracticeMvc.Controllers
 {

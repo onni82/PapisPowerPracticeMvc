@@ -21,5 +21,11 @@ namespace PapisPowerPracticeMvc.Data.Services
         {
             return await _httpClient.GetFromJsonAsync<MuscleGroupViewModel>($"MuscleGroup/{id}");
         }
+
+        public async Task<bool> CreateAsync(MuscleGroupViewModel muscleGroup)
+        {
+            var response = await _httpClient.PostAsJsonAsync("MuscleGroup", muscleGroup);
+            return response.IsSuccessStatusCode;
+        }
     }
 }
