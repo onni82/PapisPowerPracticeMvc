@@ -36,29 +36,5 @@ namespace PapisPowerPracticeMvc.Controllers
             ViewBag.MuscleGroup = group;
             return View(relatedExercises);
         }
-
-        [HttpGet]
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Create(MuscleGroupViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            var success = await _muscleGroupService.CreateAsync(model);
-            if (success)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
-            ModelState.AddModelError("", "Kunde inte skapa muskelgruppen. Försök igen.");
-            return View(model);
-        }
     }
 }

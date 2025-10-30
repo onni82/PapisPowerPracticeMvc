@@ -1,5 +1,26 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@model PapisPowerPracticeMvc.ViewModels.MuscleGroupViewModel
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Lägg till muskelgrupp</h2>
+
+    <form asp-action="Create" method="post" class="mx-auto" style="max-width: 400px;">
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label">Namn</label>
+            <input asp-for="Name" class="form-control" required />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="ImageUrl" class="form-label">Bild-URL</label>
+            <input asp-for="ImageUrl" class="form-control" />
+            <span asp-validation-for="ImageUrl" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Spara</button>
+        <a asp-action="Index" class="btn btn-secondary w-100 mt-2">Avbryt</a>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }
