@@ -1,5 +1,6 @@
 ﻿using PapisPowerPracticeMvc.Data.Services.IService;
 using PapisPowerPracticeMvc.ViewModels;
+using System.Text.Json;
 
 namespace PapisPowerPracticeMvc.Data.Services
 {
@@ -19,22 +20,40 @@ namespace PapisPowerPracticeMvc.Data.Services
 
         public async Task<MuscleGroupViewModel?> GetByIdAsync(int id)
         {
-            var response = await _httpClient.GetAsync($"MuscleGroup/{id}");
-
-            if (!response.IsSuccessStatusCode)
+            try
             {
-                // T.ex. 404- eller 500-fel
-                return null;
-            }
+                var response = await _httpClient.GetAsync($"MuscleGroup/{id}");
 
-			// Vid 204 No content, returnera null
-            if (response.Content.Headers.ContentLength == 0)
+                if (!response.IsSuccessStatusCode)
+                {
+                    // T.ex. 404- eller 500-fel
+                    return null;
+                }
+
+                // Vid 204 No content, returnera null
+                if (response.Content.Headers.ContentLength == 0)
+                {
+                    return null;
+                }
+
+                // Deserialisera svaret till MuscleGroupViewModel
+                return await response.Content.ReadFromJsonAsync<MuscleGroupViewModel>();
+            }
+            catch (HttpRequestException)
             {
+                // API:t kanske inte nås
                 return null;
-            }
-
-			// Deserialisera svaret till MuscleGroupViewModel
-            return await response.Content.ReadFromJsonAsync<MuscleGroupViewModel>();
+			}
+			catch (NotSupportedException)
+			{
+                // Svaret är inte JSON
+                return null;
+			}
+			catch (JsonException)
+			{
+				// JSON kunde inte deserialiseras
+                return null;
+			}
 		}
 
 		public async Task<bool> CreateAsync(MuscleGroupViewModel muscleGroup)
