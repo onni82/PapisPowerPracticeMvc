@@ -55,7 +55,6 @@ namespace PapisPowerPracticeMvc.Areas.Admin.Controllers
             }
 
             TempData["SuccessMessage"] = "Muskelgruppen har uppdaterats!";
-
             return RedirectToAction(nameof(Index));
         }
 
