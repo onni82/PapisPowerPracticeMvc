@@ -1,17 +1,24 @@
 ﻿@model IEnumerable<PapisPowerPracticeMvc.ViewModels.MuscleGroupViewModel>
 
 @{
-    ViewData["Title"] = "Muskelgrupper (Admin)";
+    ViewData["Title"] = "Muskelgrupphantering";
 }
 
 <div class="container mt-5">
-    <h2 class="text-center mb-4">Muskelgrupper (Admin)</h2>
+    <h2 class="text-center mb-4">Muskelgrupphantering</h2>
 
     <div class="text-end mb-3">
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createMuscleGroupModal">
-            <i class="bi bi-plus-circle"></i> Lägg till muskelgrupp
-        </button>
+        <a asp-area="Admin" asp-controller="MuscleGroups" asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle">Lägg till muskelgrupp</i>
+        </a>
     </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success text-center">
+			@TempData["SuccessMessage"]
+        </div>
+    }
 
     <table class="table table-striped align-middle">
         <thead class="table-dark">
@@ -19,56 +26,41 @@
                 <th>ID</th>
                 <th>Namn</th>
                 <th>Bild</th>
+                <th>Åtgärder</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var group in Model)
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var group in Model)
+                {
+                    <tr>
+                        <td>@group.Id</td>
+                        <td>@group.Name</td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(group.ImageUrl))
+                            {
+                                <img src="@group.ImageUrl" alt="@group.Name" width="80" height="80" style="object-fit: cover;" />
+                            }
+                            else
+                            {
+                                <span class="text-muted">Ingen bild</span>
+                            }
+                        </td>
+                        <td class="text-center">
+                            <a asp-area="Admin" asp-controller="MuscleGroups" asp-action="Edit" asp-route-id="@group.Id" class="btn btn-sm btn-warning me-2">
+                                Redigera
+                            </a>
+                        </td>
+                    </tr>
+                }
+            }
+            else
             {
                 <tr>
-                    <td>@group.Id</td>
-                    <td>@group.Name</td>
-                    <td>
-                        @if (!string.IsNullOrEmpty(group.ImageUrl))
-                        {
-                            <img src="@group.ImageUrl" alt="@group.Name" width="80" height="80" style="object-fit: cover;" />
-                        }
-                        else
-                        {
-                            <span class="text-muted">Ingen bild</span>
-                        }
-                    </td>
+                    <td colspan="4" class="text-center text-muted">Inga muskelgrupper hittades.</td>
                 </tr>
             }
         </tbody>
     </table>
-</div>
-
-<!-- Modal för att skapa ny muskelgrupp -->
-<div class="modal fade" id="createMuscleGroupModal" tabindex="-1" aria-labelledby="createMuscleGroupLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form asp-area="Admin" asp-controller="MuscleGroups" asp-action="Create" method="post">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="createMuscleGroupLabel">Lägg till muskelgrupp</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="Name" class="form-label">Namn</label>
-                        <input type="text" class="form-control" id="Name" name="Name" required />
-                    </div>
-                    <div class="mb-3">
-                        <label for="ImageUrl" class="form-label">Bild-URL (valfritt)</label>
-                        <input type="text" class="form-control" id="ImageUrl" name="ImageUrl" />
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Avbryt</button>
-                    <button type="submit" class="btn btn-primary">Spara</button>
-                </div>
-            </form>
-        </div>
-    </div>
 </div>
