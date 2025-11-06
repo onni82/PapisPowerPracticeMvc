@@ -26,28 +26,39 @@
                 <th>ID</th>
                 <th>Namn</th>
                 <th>Bild</th>
-                <th></th>
+                <th>Åtgärder</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var group in Model)
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var group in Model)
+                {
+                    <tr>
+                        <td>@group.Id</td>
+                        <td>@group.Name</td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(group.ImageUrl))
+                            {
+                                <img src="@group.ImageUrl" alt="@group.Name" width="80" height="80" style="object-fit: cover;" />
+                            }
+                            else
+                            {
+                                <span class="text-muted">Ingen bild</span>
+                            }
+                        </td>
+                        <td class="text-center">
+                            <a asp-area="Admin" asp-controller="MuscleGroups" asp-action="Edit" asp-route-id="@group.Id" class="btn btn-sm btn-warning me-2">
+                                Redigera
+                            </a>
+                        </td>
+                    </tr>
+                }
+            }
+            else
             {
                 <tr>
-                    <td>@group.Id</td>
-                    <td>@group.Name</td>
-                    <td>
-                        @if (!string.IsNullOrEmpty(group.ImageUrl))
-                        {
-                            <img src="@group.ImageUrl" alt="@group.Name" width="80" height="80" style="object-fit: cover;" />
-                        }
-                        else
-                        {
-                            <span class="text-muted">Ingen bild</span>
-                        }
-                    </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@group.Id" class="btn btn-sm btn-warning">Redigera</a>
-                    </td>
+                    <td colspan="4" class="text-center text-muted">Inga muskelgrupper hittades.</td>
                 </tr>
             }
         </tbody>
