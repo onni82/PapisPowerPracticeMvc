@@ -34,7 +34,29 @@ namespace PapisPowerPracticeMvc.Areas.Admin.Controllers
             return View(group);
         }
 
-        [HttpGet]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, MuscleGroupViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var result = await _muscleGroupService.UpdateAsync(id, model);
+            
+            if (!result)
+            {
+				ModelState.AddModelError("", "Kunde inte uppdatera muskelgruppen. Försök igen.");
+                return View(model);
+			}
+
+            TempData["SuccessMessage"] = "Muskelgruppen har uppdaterats!";
+
+			return RedirectToAction(nameof(Index));
+		}
+
+		[HttpGet]
         public IActionResult Create()
         {
             return View();

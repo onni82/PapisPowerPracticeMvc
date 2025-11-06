@@ -27,5 +27,10 @@ namespace PapisPowerPracticeMvc.Data.Services
             var response = await _httpClient.PostAsJsonAsync("MuscleGroup", muscleGroup);
             return response.IsSuccessStatusCode;
         }
+        public async Task<bool> UpdateAsync(int id, MuscleGroupViewModel muscleGroup)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"MuscleGroup/{id}", muscleGroup);
+            return response.IsSuccessStatusCode;
+		}
     }
 }
