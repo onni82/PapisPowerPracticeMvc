@@ -22,6 +22,18 @@ namespace PapisPowerPracticeMvc.Areas.Admin.Controllers
             return View(groups);
         }
 
+        public async Task<IActionResult> Edit(int id)
+        {
+            var group = await _muscleGroupService.GetByIdAsync(id);
+            
+            if (group == null)
+            {
+                return NotFound();
+			}
+
+			return View(group);
+		}
+
         [HttpGet]
         public IActionResult Create()
         {
