@@ -47,16 +47,16 @@ namespace PapisPowerPracticeMvc.Areas.Admin.Controllers
             
             if (!result)
             {
-				ModelState.AddModelError("", "Kunde inte uppdatera muskelgruppen. Försök igen.");
+                ModelState.AddModelError("", "Kunde inte uppdatera muskelgruppen. Försök igen.");
                 return View(model);
-			}
+            }
 
             TempData["SuccessMessage"] = "Muskelgruppen har uppdaterats!";
 
-			return RedirectToAction(nameof(Index));
-		}
+            return RedirectToAction(nameof(Index));
+        }
 
-		[HttpGet]
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
