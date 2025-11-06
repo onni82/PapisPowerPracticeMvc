@@ -8,9 +8,9 @@
     <h2 class="text-center mb-4">Muskelgrupphantering</h2>
 
     <div class="text-end mb-3">
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createMuscleGroupModal">
+        <a asp-area="Admin" asp-controller="MuscleGroups" asp-action="Create" class="btn btn-primary">
             <i class="bi bi-plus-circle">Lägg till muskelgrupp</i>
-        </button>
+        </a>
     </div>
 
     <table class="table table-striped align-middle">
@@ -45,34 +45,4 @@
             }
         </tbody>
     </table>
-</div>
-
-<!-- Modal för att skapa ny muskelgrupp -->
-<div class="modal fade" id="createMuscleGroupModal" tabindex="-1" aria-labelledby="createMuscleGroupLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form asp-area="Admin" asp-controller="MuscleGroups" asp-action="Create" method="post">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="createMuscleGroupLabel">Lägg till muskelgrupp</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="Name" class="form-label">Namn</label>
-                        <input type="text" class="form-control" id="Name" name="Name" required />
-                    </div>
-                    <div class="mb-3">
-                        <label for="ImageUrl" class="form-label">Bild-URL</label>
-                        <input type="text" class="form-control" id="ImageUrl" name="ImageUrl" required />
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Avbryt</button>
-                    <button type="submit" class="btn btn-primary">Spara</button>
-                </div>
-            </form>
-        </div>
-    </div>
 </div>
