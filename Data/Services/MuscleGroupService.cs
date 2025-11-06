@@ -19,10 +19,25 @@ namespace PapisPowerPracticeMvc.Data.Services
 
         public async Task<MuscleGroupViewModel?> GetByIdAsync(int id)
         {
-            return await _httpClient.GetFromJsonAsync<MuscleGroupViewModel>($"MuscleGroup/{id}");
-        }
+            var response = await _httpClient.GetAsync($"MuscleGroup/{id}");
 
-        public async Task<bool> CreateAsync(MuscleGroupViewModel muscleGroup)
+            if (!response.IsSuccessStatusCode)
+            {
+                // T.ex. 404- eller 500-fel
+                return null;
+            }
+
+			// Vid 204 No content, returnera null
+            if (response.Content.Headers.ContentLength == 0)
+            {
+                return null;
+            }
+
+			// Deserialisera svaret till MuscleGroupViewModel
+            return await response.Content.ReadFromJsonAsync<MuscleGroupViewModel>();
+		}
+
+		public async Task<bool> CreateAsync(MuscleGroupViewModel muscleGroup)
         {
             var response = await _httpClient.PostAsJsonAsync("MuscleGroup", muscleGroup);
             return response.IsSuccessStatusCode;
