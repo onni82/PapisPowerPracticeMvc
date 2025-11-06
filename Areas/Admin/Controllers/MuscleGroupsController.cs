@@ -29,10 +29,10 @@ namespace PapisPowerPracticeMvc.Areas.Admin.Controllers
             if (group == null)
             {
                 return NotFound();
-			}
+            }
 
-			return View(group);
-		}
+            return View(group);
+        }
 
         [HttpGet]
         public IActionResult Create()
