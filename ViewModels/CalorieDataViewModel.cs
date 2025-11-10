@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PapisPowerPracticeMvc.Models
+namespace PapisPowerPracticeMvc.ViewModels
 {
     public class CalorieDataViewModel
     {

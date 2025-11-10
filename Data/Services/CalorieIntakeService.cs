@@ -1,5 +1,5 @@
 ﻿using PapisPowerPracticeMvc.Data.Services.IService;
-using PapisPowerPracticeMvc.Models;
+using PapisPowerPracticeMvc.ViewModels;
 using System.Net.Http.Json;
 
 namespace PapisPowerPracticeMvc.Data.Services

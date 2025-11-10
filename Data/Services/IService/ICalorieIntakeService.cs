@@ -1,4 +1,4 @@
-﻿using PapisPowerPracticeMvc.Models;
+﻿using PapisPowerPracticeMvc.ViewModels;
 
 namespace PapisPowerPracticeMvc.Data.Services.IService
 {
