@@ -92,7 +92,7 @@ namespace PapisPowerPracticeMvc.Areas.Admin.Controllers
 
             if (success)
             {
-                TempData["Success"] = "Muskelgruppen har tagits bort.";
+                TempData["SuccessMessage"] = "Muskelgruppen har tagits bort.";
             }
             else
             {
