@@ -83,5 +83,23 @@ namespace PapisPowerPracticeMvc.Areas.Admin.Controllers
             ModelState.AddModelError("", "Kunde inte skapa muskelgruppen. Försök igen.");
             return View(model);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var success = await _muscleGroupService.DeleteAsync(id);
+
+            if (success)
+            {
+                TempData["Success"] = "Muskelgruppen har tagits bort.";
+            }
+            else
+            {
+                TempData["Error"] = "Kunde inte ta bort muskelgruppen.";
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
