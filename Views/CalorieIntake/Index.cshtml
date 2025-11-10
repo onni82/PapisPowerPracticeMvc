@@ -1,0 +1,78 @@
+﻿@model PapisPowerPracticeMvc.ViewModels.CalorieDataViewModel
+
+@{
+    ViewData["Title"] = "Kaloriberäkning";
+    var result = ViewBag.Result as PapisPowerPracticeMvc.ViewModels.CalorieResultViewModel;
+    var error = ViewBag.Error as string;
+}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Beräkna ditt dagliga kaloriintag</h2>
+
+    @if (!string.IsNullOrEmpty(error))
+    {
+        <div class="alert alert-danger">@error</div>
+    }
+
+    <form asp-action="Index" method="post" class="card p-4 shadow-sm border-0">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Kön</label>
+                <select asp-for="Gender" class="form-select">
+                    <option value="">Välj kön</option>
+                    <option value="male">Man</option>
+                    <option value="female">Kvinna</option>
+                </select>
+                <span asp-validation-for="Gender" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Aktivitetsnivå</label>
+                <select asp-for="ActivityLevel" class="form-select">
+                    <option value="">Välj aktivitetsnivå</option>
+                    @foreach (var level in (IEnumerable<string>)ViewBag.ActivityLevels)
+                    {
+                        <option value="@level">@level.Replace("_", " ")</option>
+                    }
+                </select>
+                <span asp-validation-for="ActivityLevel" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Vikt (kg)</label>
+                <input asp-for="Weight" class="form-control" />
+                <span asp-validation-for="Weight" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Längd (cm)</label>
+                <input asp-for="Height" class="form-control" />
+                <span asp-validation-for="Height" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Ålder</label>
+                <input asp-for="Age" class="form-control" />
+                <span asp-validation-for="Age" class="text-danger"></span>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 mt-3">Beräkna</button>
+    </form>
+
+    @if (result != null)
+    {
+        <div class="card mt-4 p-4 bg-light shadow-sm">
+            <h4>Resultat</h4>
+            <p><strong>BMR:</strong> @result.Bmr kcal/dag</p>
+            <p><strong>TDEE:</strong> @result.Tdee kcal/dag</p>
+            <p><em>(Total Daily Energy Expenditure)</em></p>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
