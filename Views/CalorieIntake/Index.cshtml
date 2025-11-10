@@ -14,6 +14,17 @@
         <div class="alert alert-danger">@error</div>
     }
 
+    @{
+        var activityDescriptions = new Dictionary<string, string>
+        {
+            { "sedentary", "0 dagar/vecka" },
+            { "lightly_active", "1–2 dagar/vecka" },
+            { "moderately_active", "3–4 dagar/vecka" },
+            { "active", "5–6 dagar/vecka" },
+            { "very_active", "7 dagar/vecka" }
+        };
+    }
+
     <form asp-action="Index" method="post" class="card p-4 shadow-sm border-0">
         <div class="row">
             <div class="col-md-6 mb-3">
@@ -32,7 +43,9 @@
                     <option value="">Välj aktivitetsnivå</option>
                     @foreach (var level in (IEnumerable<string>)ViewBag.ActivityLevels)
                     {
-                        <option value="@level">@level.Replace("_", " ")</option>
+                        var displayName = level.Replace("_", " ");
+                        var days = activityDescriptions.ContainsKey(level) ? $"({activityDescriptions[level]})" : "";
+                        <option value="@level">@displayName @days</option>
                     }
                 </select>
                 <span asp-validation-for="ActivityLevel" class="text-danger"></span>
