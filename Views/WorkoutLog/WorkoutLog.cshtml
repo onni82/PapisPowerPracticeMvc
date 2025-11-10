@@ -137,9 +137,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('click', function(e) {
         if (e.target.classList.contains('add-set-btn')) {
             const setTemplate = e.target.parentElement.querySelector('.set-template').innerHTML;
-            e.target.closest('.workout-entry').querySelector('.sets-container').innerHTML += setTemplate;
-            
             const container = e.target.closest('.workout-entry').querySelector('.sets-container');
+            container.insertAdjacentHTML('beforeend', setTemplate);
+            
             const setRows = container.querySelectorAll('.set-row');
             setRows.forEach((row, index) => {
                 const label = row.querySelector('label');
