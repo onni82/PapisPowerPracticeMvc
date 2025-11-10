@@ -50,8 +50,14 @@ namespace PapisPowerPracticeMvc
 			})
 			.AddHttpMessageHandler<JwtHandler>();
 
-			// JWT-autentisering
-			builder.Services.AddAuthentication(options =>
+            builder.Services.AddHttpClient<ICalorieIntakeService, CalorieIntakeService>(client =>
+            {
+                client.BaseAddress = new Uri(builder.Configuration["AuthApi:BaseURL"]);
+            })
+            .AddHttpMessageHandler<JwtHandler>();
+
+            // JWT-autentisering
+            builder.Services.AddAuthentication(options =>
 			{
 				options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
 				options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
