@@ -46,8 +46,6 @@ namespace PapisPowerPracticeMvc.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ExercisePageViewModel pageModel)
         {
-
-
             var model = pageModel.NewExercise;
             
             bool success = await _exerciseService.AddExercise(model);
@@ -61,10 +59,5 @@ namespace PapisPowerPracticeMvc.Areas.Admin.Controllers
             ModelState.AddModelError("", "Kunde inte skapa övning");
             return View("Index", pageModel);
         }
-
-
-
-
     }
-
-    }
+}
