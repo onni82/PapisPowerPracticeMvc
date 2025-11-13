@@ -56,8 +56,10 @@ namespace PapisPowerPracticeMvc.Areas.Admin.Controllers
                 return RedirectToAction("Index");
             }
 
-            ModelState.AddModelError("", "Kunde inte skapa övning");
-            return View("Index", pageModel);
+            {
+                TempData["error"] = "Övningen existerar redan";
+                return RedirectToAction("Index", pageModel);
+            }
         }
     }
 }
