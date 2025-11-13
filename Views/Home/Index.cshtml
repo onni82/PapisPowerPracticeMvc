@@ -1,42 +1,53 @@
 ﻿@{
-    ViewData["Title"] = "PapisPowerPractice";
+    ViewData["Title"] = "Papi's Power Practice";
 }
 
 <div class="container text-center py-5">
-    <h1 class="fw-bold mb-2">PapisPowerPractice</h1>
-    <p class="text-muted mb-5">
-        Din träningslogg, kcal-räknare, tutorials och AI-plan på ett ställe.
-    </p>
+    @if (User.Identity?.IsAuthenticated ?? false)
+    {
+        <!-- Inloggad: visa knappar -->
+        <h1 class="fw-bold mb-2">Papi's Power Practice</h1>
+        <p class="text-muted mb-5">
+            Din träningslogg, kcal-räknare, tutorials och AI-plan på ett ställe.
+        </p>
 
-    <div class="row justify-content-center g-4">
-        <div class="col-6">
-
-            <a asp-controller="WorkoutLog" asp-action="WorkoutLog" class="btn btn-primary w-100 py-4 rounded-4 shadow">
-                <div class="fs-2 mb-2">🏋️‍♂️</div>
-                <div class="fw-bold">Träningslogg</div>
-            </a>
+        <div class="row justify-content-center g-4">
+            <div class="col-6">
+                <a asp-controller="WorkoutLog" asp-action="WorkoutLog" class="btn btn-primary w-100 py-4 rounded-4 shadow">
+                    <div class="fs-2 mb-2">🏋️‍♂️</div>
+                    <div class="fw-bold">Träningslogg</div>
+                </a>
+            </div>
+            <div class="col-6">
+                <a asp-controller="CalorieIntake" asp-action="Index" class="btn btn-primary w-100 py-4 rounded-4 shadow">
+                    <div class="fs-2 mb-2">🔥</div>
+                    <div class="fw-bold">Kcal-räknare</div>
+                </a>
+            </div>
+            <div class="col-6">
+                <a asp-controller="Home" asp-action="Chat" class="btn btn-primary w-100 py-4 rounded-4 shadow">
+                    <div class="fs-2 mb-2">🤖</div>
+                    <div class="fw-bold">AI-plan</div>
+                </a>
+            </div>
         </div>
-        <div class="col-6">
-
-            <a asp-controller="Home" asp-action="Kcal" class="btn btn-primary w-100 py-4 rounded-4 shadow">
-                <div class="fs-2 mb-2">🔥</div>
-                <div class="fw-bold">Kcal-räknare</div>
-            </a>
+    }
+    else
+    {
+        <!-- Inte inloggad: visa information -->
+        <div class="p-4 rounded-4 shadow-sm mt-4">
+            <h1 class="fw-bold mb-2">Välkommen till Papi's Power Practice</h1>
+            <p class="text-muted mb-5">
+                Här får du allt du behöver för att ta din träning till nästa nivå —
+                logga pass, räkna kalorier, lär dig nya övningar och få personliga AI-träningsplaner.
+            </p>
+            <p class="mb-4">Skapa ett konto eller logga in för att börja din resa!</p>
+            <div>
+                <a asp-area="" asp-controller="Auth" asp-action="Login" class="btn btn-primary btn-lg me-2">Logga in</a>
+                <a asp-area="" asp-controller="Auth" asp-action="Register" class="btn btn-outline-primary btn-lg">Skapa konto</a>
+            </div>
         </div>
-        <div class="col-6">
-
-            <a asp-controller="Home" asp-action="Tutorials" class="btn btn-primary w-100 py-4 rounded-4 shadow">
-                <div class="fs-2 mb-2">📘</div>
-                <div class="fw-bold">Träningsform</div>
-            </a>
-        </div>
-        <div class="col-6">
-            <a asp-controller="Home" asp-action="Plan" class="btn btn-primary w-100 py-4 rounded-4 shadow">
-                <div class="fs-2 mb-2">🤖</div>
-                <div class="fw-bold">AI-plan</div>
-            </a>
-        </div>
-    </div>
+    }
 </div>
 
 @section Scripts {

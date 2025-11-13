@@ -10,5 +10,6 @@ namespace PapisPowerPracticeMvc.Data.Services.IService
         Task<List<Exercise>> GetExercisesForWorkoutAsync();
         Task<List<MuscleGroup>> GetMuscleGroupsAsync();
         Task<List<Exercise>> GetExercisesByMuscleGroupAsync(int muscleGroupId);
+        Task<bool> AddExercise(CreateExerciseViewModel model);
     }
 }

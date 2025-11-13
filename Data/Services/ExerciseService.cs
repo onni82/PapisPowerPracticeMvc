@@ -133,5 +133,20 @@ namespace PapisPowerPracticeMvc.Data.Services
                 return new List<Exercise>();
             }
         }
-    }
+        public async Task<bool> AddExercise(CreateExerciseViewModel model)
+        {
+            
+
+            var exercise = new
+            {
+                Name = model.Name,
+                Description = model.Description,
+                VideoUrl = model.VideoUrl,
+                MuscleGroupIds = model.SelectedMuscleGroupIds
+            };
+
+            var response = await _httpClient.PostAsJsonAsync("Exercises", exercise);
+            return response.IsSuccessStatusCode;
+        }
+    } 
 }
