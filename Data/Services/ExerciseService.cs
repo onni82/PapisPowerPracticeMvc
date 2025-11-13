@@ -135,6 +135,7 @@ namespace PapisPowerPracticeMvc.Data.Services
         }
         public async Task<bool> AddExercise(CreateExerciseViewModel model)
         {
+            
 
             var exercise = new
             {
