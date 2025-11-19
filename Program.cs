@@ -56,6 +56,12 @@ namespace PapisPowerPracticeMvc
             })
             .AddHttpMessageHandler<JwtHandler>();
 
+            builder.Services.AddHttpClient<IChatService, ChatService>(client =>
+            {
+                client.BaseAddress = new Uri(builder.Configuration["AuthApi:BaseURL"]);
+            })
+            .AddHttpMessageHandler<JwtHandler>();
+
             // JWT-autentisering
             builder.Services.AddAuthentication(options =>
 			{
