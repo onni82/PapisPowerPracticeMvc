@@ -40,7 +40,7 @@ namespace PapisPowerPracticeMvc.Data.Services
                 _logger.LogError(ex, "Error occurred while fetching exercises");
                 return new List<ExerciseViewModel>();
             }
-		}
+        }
 
         public async Task<ExerciseViewModel?> GetByIdAsync(int id)
         {

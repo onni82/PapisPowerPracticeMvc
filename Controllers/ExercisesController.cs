@@ -19,7 +19,7 @@ namespace PapisPowerPracticeMvc.Controllers
         {
             var exercises = await _exerciseService.GetAllAsync();
             return View(exercises);
-		}
+        }
 
         public async Task<IActionResult> Details(int id)
         {
