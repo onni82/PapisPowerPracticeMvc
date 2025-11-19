@@ -18,6 +18,15 @@
 
     <!-- Page-scoped styles (ex: home-dark.css from Index.cshtml) -->
     @RenderSection("Styles", required: false)
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1J0LEQ9QYB"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-1J0LEQ9QYB');
+    </script>
 </head>
 <body>
     <header>
