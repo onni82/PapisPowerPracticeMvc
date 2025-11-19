@@ -26,6 +26,7 @@
                     <th scope="col">Beskrivning</th>
                     <th scope="col">Muskelgrupp</th>
                     <th scope="col">VideoUrl</th>
+                    <th scope="col" class="text-center"></th>
                 </tr>
             </thead>
             <tbody>
@@ -37,6 +38,21 @@
                         <td>@exercise.Description</td>
                         <td>@string.Join(", ", exercise.MuscleGroups)</td>
                         <td>@exercise.VideoUrl</td>
+
+                        <td class="text-center">
+                            <a asp-area="Admin" asp-controller="Exercise" asp-action="Edit" asp-route-id="@exercise.Id" class="btn btn-sm btn-warning me-2">
+                                Redigera
+                            </a>
+
+                            <!-- Ta bort-knapp öppnar modal -->
+                            <button class="btn btn-sm btn-danger"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#confirmDeleteModal"
+                                    data-id="@exercise.Id"
+                                    data-name="@exercise.Name">
+                                Ta bort
+                            </button>
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -88,3 +104,40 @@
         <button type="submit" class="btn btn-primary">Spara</button>
     </form>
 </div>
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Bekräfta borttagning</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Är du säker på att du vill ta bort <strong id="exerciseName"></strong>?
+            </div>
+            <div class="modal-footer">
+                <form id="deleteForm" method="post">
+                    @Html.AntiForgeryToken()
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Avbryt</button>
+                    <button type="submit" class="btn btn-danger">Ta bort</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const modal = document.getElementById('confirmDeleteModal');
+        modal.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget;
+            const groupId = button.getAttribute('data-id');
+            const groupName = button.getAttribute('data-name');
+
+            const namePlaceholder = modal.querySelector('#exerciseName');
+            const form = modal.querySelector('#deleteForm');
+
+            namePlaceholder.textContent = groupName;
+            form.action = `/Admin/Exercise/Delete/${groupId}`;
+        });
+    </script>
+    }
