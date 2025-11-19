@@ -148,5 +148,17 @@ namespace PapisPowerPracticeMvc.Data.Services
             var response = await _httpClient.PostAsJsonAsync("Exercises", exercise);
             return response.IsSuccessStatusCode;
         }
+        public async Task<bool> UpdateExercise(int id, ExerciseViewModel model)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"Exercises/{id}", model);
+
+            return response.IsSuccessStatusCode;
+        }
+        public async Task<bool> Delete(int id)
+        {
+            var response = await _httpClient.DeleteAsync($"Exercises/{id}");
+
+            return response.IsSuccessStatusCode;
+        }
     } 
 }
