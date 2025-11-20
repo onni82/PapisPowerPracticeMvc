@@ -1,68 +1,69 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
+using PapisPowerPracticeMvc.Data.Services.IService;
+using PapisPowerPracticeMvc.Models.Chat.Request;
+using PapisPowerPracticeMvc.Models.Chat.Response;
 
 namespace PapisPowerPracticeMvc.Controllers
 {
+    [Route("[controller]")]
     public class ChatController : Controller
     {
-        private readonly HttpClient _httpClient;
-        private readonly IConfiguration _configuration;
+        private readonly IChatService _chatService;
 
-        public ChatController(HttpClient httpClient, IConfiguration configuration)
+        public ChatController(IChatService chatService)
         {
-            _httpClient = httpClient;
-            _configuration = configuration;
+            _chatService = chatService;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> SendMessage([FromForm] string message)
+        // POST /Chat/SendMessage
+        [HttpPost("SendMessage")]
+        public async Task<IActionResult> SendMessage([FromBody] ChatRequestDTO request)
         {
+            if (request == null || string.IsNullOrWhiteSpace(request.Message))
+            {
+                return BadRequest(new { success = false, error = "Message cannot be empty" });
+            }
+
             try
             {
-                _httpClient.DefaultRequestHeaders.Clear();
-                
-                var jwtToken = HttpContext.Request.Cookies["jwt"];
-                if (!string.IsNullOrEmpty(jwtToken))
+                var assistantMsg = await _chatService.SendMessageAsync(request);
+
+                return Json(new
                 {
-                    _httpClient.DefaultRequestHeaders.Authorization = 
-                        new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", jwtToken);
-                }
-                
-                var baseUrl = _configuration["ApiSettings:BaseUrl"];
-                var content = new StringContent($"\"{message}\"", System.Text.Encoding.UTF8, "application/json");
-                var response = await _httpClient.PostAsync($"{baseUrl}/api/ChatBot/chat", content);
-                
-                if (response.IsSuccessStatusCode)
-                {
-                    var responseContent = await response.Content.ReadAsStringAsync();
-                    
-                    // Check if response is JSON
-                    if (responseContent.StartsWith("{") || responseContent.StartsWith("["))
-                    {
-                        var data = JsonSerializer.Deserialize<ChatResponse>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                        return Json(new { success = true, response = data?.Response ?? "No response" });
-                    }
-                    else
-                    {
-                        // Return the raw response if it's not JSON
-                        return Json(new { success = true, response = responseContent });
-                    }
-                }
-                else
-                {
-                    var errorContent = await response.Content.ReadAsStringAsync();
-                    return Json(new { success = false, error = $"API returned {response.StatusCode}: {errorContent}" });
-                }
+                    success = true,
+                    assistant = assistantMsg.Message,
+                    sessionId = assistantMsg.ChatSessionId,
+                    messageId = assistantMsg.Id,
+                    timestamp = assistantMsg.Timestamp
+                });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { success = false, error = ex.Message });
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, error = ex.Message });
+                return StatusCode(500, new { success = false, error = ex.Message });
             }
         }
-    }
 
-    public class ChatResponse
-    {
-        public string Response { get; set; } = string.Empty;
+        // GET /Chat/Session/{sessionId}
+        [HttpGet("Session/{sessionId:guid}")]
+        public async Task<IActionResult> GetSessionMessages(Guid sessionId)
+        {
+            try
+            {
+                var messages = await _chatService.GetSessionMessagesAsync(sessionId);
+                return Ok(messages);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return NotFound(new { success = false, error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, error = ex.Message });
+            }
+        }
     }
 }

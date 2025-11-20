@@ -16,7 +16,7 @@ namespace PapisPowerPracticeMvc.Data.Services
 
         public async Task<ChatMsgDTO> SendMessageAsync(ChatRequestDTO request)
         {
-            var resp = await _httpClient.PostAsJsonAsync("api/ChatBot/chat", request);
+            var resp = await _httpClient.PostAsJsonAsync("ChatBot/chat", request);
             if (!resp.IsSuccessStatusCode)
             {
                 var body = await resp.Content.ReadAsStringAsync();
@@ -29,7 +29,7 @@ namespace PapisPowerPracticeMvc.Data.Services
 
         public async Task<IEnumerable<ChatMsgDTO>> GetSessionMessagesAsync(Guid sessionId)
         {
-            var resp = await _httpClient.GetAsync($"api/ChatBot/{sessionId}");
+            var resp = await _httpClient.GetAsync($"ChatBot/{sessionId}");
             if (!resp.IsSuccessStatusCode)
             {
                 var body = await resp.Content.ReadAsStringAsync();
@@ -42,7 +42,7 @@ namespace PapisPowerPracticeMvc.Data.Services
 
         public async Task<IEnumerable<ChatSessionDTO>> GetUserSessionsAsync(string userId)
         {
-            var resp = await _httpClient.GetAsync($"api/ChatBot/sessions/{Uri.EscapeDataString(userId)}");
+            var resp = await _httpClient.GetAsync($"ChatBot/sessions/{Uri.EscapeDataString(userId)}");
             if (!resp.IsSuccessStatusCode)
             {
                 var body = await resp.Content.ReadAsStringAsync();
