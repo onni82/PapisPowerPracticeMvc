@@ -34,7 +34,7 @@
         </div>
         <button id="addExerciseBtn" class="btn btn-primary" disabled>Add Exercise</button>
     </div>
-    
+
     <div class="col-md-8">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h3>Today's Workout</h3>
@@ -53,8 +53,11 @@
                 }
             </div>
         </div>
+        @if (Model.WorkoutLogId.HasValue)
+        {
+            <input type="hidden" id="WorkoutLogId" value="@Model.WorkoutLogId.Value"/>
+        }
         <div id="workoutEntries">
-            
         </div>
         <div class="mt-3" id="saveWorkoutSection" style="display: none;">
             <form method="post" action="@Url.Action("Create")" onsubmit="collectWorkoutData(event)">
@@ -67,125 +70,185 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Auto-hide success alert after 3 seconds
-    const successAlert = document.getElementById('successAlert');
-    if (successAlert) {
-        setTimeout(() => {
-            successAlert.style.display = 'none';
-        }, 3000);
-    }
-    
-    // Handle muscle group selection
-    document.getElementById('muscleGroupSelect').addEventListener('change', function() {
-        const muscleGroupId = this.value;
-        const exerciseSelect = document.getElementById('exerciseSelect');
-        const addExerciseBtn = document.getElementById('addExerciseBtn');
-        
-        if (muscleGroupId) {
-            fetch(`@Url.Action("GetExercisesByMuscleGroup")?muscleGroupId=${muscleGroupId}`)
-                .then(response => response.json())
-                .then(exercises => {
-                    exerciseSelect.innerHTML = '<option value="">Select an exercise...</option>';
-                    exercises.forEach(exercise => {
-                        exerciseSelect.innerHTML += `<option value="${exercise.id}">${exercise.name}</option>`;
-                    });
-                    exerciseSelect.disabled = false;
-                })
-                .catch(error => {
-                    console.error('Error loading exercises:', error);
-                    exerciseSelect.innerHTML = '<option value="">Error loading exercises</option>';
-                });
-        } else {
-            exerciseSelect.innerHTML = '<option value="">Select a muscle group first...</option>';
-            exerciseSelect.disabled = true;
-            addExerciseBtn.disabled = true;
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto-hide success alert after 3 seconds
+        const successAlert = document.getElementById('successAlert');
+        if (successAlert) {
+            setTimeout(() => {
+                successAlert.style.display = 'none';
+            }, 3000);
         }
-    });
-    
-    // Handle exercise selection
-    document.getElementById('exerciseSelect').addEventListener('change', function() {
-        const addExerciseBtn = document.getElementById('addExerciseBtn');
-        addExerciseBtn.disabled = !this.value;
-    });
-    
-    document.getElementById('addExerciseBtn').addEventListener('click', function() {
-        const exerciseId = document.getElementById('exerciseSelect').value;
-        
-        if (exerciseId) {
-            fetch('@Url.Action("AddExercise")', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: 'exerciseId=' + exerciseId
-            })
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('workoutEntries').innerHTML += data;
-                document.getElementById('exerciseSelect').value = '';
-                document.getElementById('saveWorkoutSection').style.display = 'block';
-            })
-            .catch(error => {
-                alert('Error adding exercise');
-            });
-        } else {
-            alert('Please select an exercise');
-        }
-    });
-    
-    document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('add-set-btn')) {
-            const setTemplate = e.target.parentElement.querySelector('.set-template').innerHTML;
-            const container = e.target.closest('.workout-entry').querySelector('.sets-container');
-            container.insertAdjacentHTML('beforeend', setTemplate);
-            
-            const setRows = container.querySelectorAll('.set-row');
-            setRows.forEach((row, index) => {
-                const label = row.querySelector('label');
-                if (label) {
-                    label.textContent = 'Set ' + (index + 1);
-                }
-            });
-        }
-        
-        if (e.target.classList.contains('remove-set-btn')) {
-            e.target.closest('.set-row').remove();
-        }
-        
-        if (e.target.classList.contains('remove-exercise-btn')) {
-            e.target.closest('.workout-entry').remove();
-        }
-    });
-});
 
-function collectWorkoutData(event) {
-    console.log('collectWorkoutData called');
-    const workoutEntries = [];
-    document.querySelectorAll('.workout-entry').forEach(entry => {
-        const exerciseName = entry.querySelector('h5').textContent;
-        const sets = [];
-        entry.querySelectorAll('.set-row').forEach(setRow => {
-            const reps = setRow.querySelector('input[placeholder="Reps"]').value;
-            const weight = setRow.querySelector('input[placeholder*="Weight"]').value;
-            if (reps && weight) {
-                sets.push(reps + ' reps @@ ' + weight + 'kg');
+        // Handle muscle group selection
+        document.getElementById('muscleGroupSelect').addEventListener('change', function() {
+            const muscleGroupId = this.value;
+            const exerciseSelect = document.getElementById('exerciseSelect');
+            const addExerciseBtn = document.getElementById('addExerciseBtn');
+
+            if (muscleGroupId) {
+                fetch(`@Url.Action("GetExercisesByMuscleGroup")?muscleGroupId=${muscleGroupId}`)
+                    .then(response => response.json())
+                    .then(exercises => {
+                        exerciseSelect.innerHTML = '<option value="">Select an exercise...</option>';
+                        exercises.forEach(exercise => {
+                            exerciseSelect.innerHTML += `<option value="${exercise.id}">${exercise.name}</option>`;
+                        });
+                        exerciseSelect.disabled = false;
+                    })
+                    .catch(error => {
+                        console.error('Error loading exercises:', error);
+                        exerciseSelect.innerHTML = '<option value="">Error loading exercises</option>';
+                    });
+            } else {
+                exerciseSelect.innerHTML = '<option value="">Select a muscle group first...</option>';
+                exerciseSelect.disabled = true;
+                addExerciseBtn.disabled = true;
             }
         });
-        if (sets.length > 0) {
-            workoutEntries.push(exerciseName + ': ' + sets.join(', '));
-        }
+
+        // Handle exercise selection
+        document.getElementById('exerciseSelect').addEventListener('change', function() {
+            const addExerciseBtn = document.getElementById('addExerciseBtn');
+            addExerciseBtn.disabled = !this.value;
+        });
+
+        document.getElementById('addExerciseBtn').addEventListener('click', function() {
+            const exerciseId = document.getElementById('exerciseSelect').value;
+
+            if (exerciseId) {
+                fetch('@Url.Action("AddExercise")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'exerciseId=' + exerciseId
+                })
+                .then(response => response.text())
+                .then(data => {
+                    const container = document.getElementById('workoutEntries');
+                    container.insertAdjacentHTML('beforeend', data);
+                    document.getElementById('exerciseSelect').value = '';
+                    document.getElementById('saveWorkoutSection').style.display = 'block';
+                })
+                .catch(error => {
+                    alert('Error adding exercise');
+                });
+            } else {
+                alert('Please select an exercise');
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('add-set-btn')) {
+                const workoutEntry = e.target.closest('.workout-entry');
+                const container = workoutEntry.querySelector('.sets-container');
+                const template = workoutEntry.querySelector('.set-template').innerHTML;
+                container.insertAdjacentHTML('beforeend', template);
+
+                updateSetNumbers(container);
+            }
+            if (e.target.classList.contains('add-warmupset-btn')){
+
+                const workoutEntry = e.target.closest('.workout-entry');
+                const container = workoutEntry.querySelector('.sets-container');
+                const template = workoutEntry.querySelector('.warmup-template').innerHTML;
+
+                container.insertAdjacentHTML('beforeend', template);
+
+                updateSetNumbers(container);
+            }
+
+            if (e.target.classList.contains('remove-set-btn')) {
+                const workoutEntry = e.target.closest('.workout-entry');
+                const container = workoutEntry.querySelector('.sets-container');
+                e.target.closest('.set-row').remove();
+                updateSetNumbers(container);
+            }
+
+            if (e.target.classList.contains('remove-exercise-btn')) {
+                e.target.closest('.workout-entry').remove();
+            }
+        });
     });
-    
-    const workoutData = workoutEntries.join('\n');
-    const input1 = document.getElementById('workoutDataInput');
-    const input2 = document.getElementById('workoutDataInput2');
-    if (input1) input1.value = workoutData;
-    if (input2) input2.value = workoutData;
-    
-    console.log('Workout data collected:', workoutData);
-    console.log('Input values set:', input1?.value, input2?.value);
-    console.log('Form submitting...');
-    
-}
+
+    function updateSetNumbers(container)
+        {
+          sortWarmupFirst(container);
+
+          const rows = container.querySelectorAll('.set-row');
+          let counter = 1;
+             rows.forEach(row => {
+             const label = row.querySelector('label');
+                    if (row.classList.contains("warmup")) {
+                    label.textContent = "Warm-up";
+                    }
+                    else{
+                        label.textContent = "Set " + counter;
+                        counter++;
+                    }
+             });
+        }
+
+    function collectWorkoutData(event) {
+        console.log('collectWorkoutData called');
+
+
+        const exercises = [];
+
+        document.querySelectorAll('.workout-entry').forEach(entry => {
+            const exerciseId = parseInt(entry.getAttribute("data-exercise-id"));
+            const exercise = {
+                ExerciseId: exerciseId,
+                Sets: []
+            };
+
+            entry.querySelectorAll(".set-row").forEach(row => {
+                const reps = row.querySelector('input[placeholder="Reps"]').value;
+                const weight = row.querySelector('input[placeholder*="Weight"]').value;
+                
+                if(!reps || !weight)
+                {
+                    return;
+                }
+                
+                const IsWarmup = row.classList.contains("warmup");
+
+                exercise.Sets.push({
+                    Reps: parseInt(reps),
+                    Weight: parseFloat(weight),
+                    IsWarmup: IsWarmup
+                });
+
+            });
+            if(exercise.Sets.length > 0) {
+                    exercises.push(exercise);
+                }
+
+
+        });
+
+        const json = JSON.stringify(exercises);
+
+        console.log("Final json sent to backend");
+        console.log(json);
+
+        // const workoutData = workoutEntries.join('\n');
+        const input1 = document.getElementById('workoutDataInput');
+        const input2 = document.getElementById('workoutDataInput2');
+        if (input1) input1.value = json;
+        if (input2) input2.value = json;
+
+    }
+    function sortWarmupFirst(container){
+        const rows = Array.from(container.querySelectorAll('.set-row'));
+
+        const warmups = rows.filter(r => r.classList.contains('warmup'));
+        const sets = rows.filter(r => !r.classList.contains('warmup'));
+
+        container.innerHTML = "";
+
+        warmups.forEach(r => container.appendChild(r));
+        sets.forEach(r => container.appendChild(r));
+
+    }
 </script>
