@@ -1,6 +1,6 @@
 @model PapisPowerPracticeMvc.Models.WorkoutExerciseViewModel
 
-<div class="workout-entry card mb-3">
+<div class="workout-entry card mb-3" data-exercise-id="@Model.ExerciseId">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">@Model.ExerciseName</h5>
         <button type="button" class="btn btn-sm btn-danger remove-exercise-btn">Remove</button>
@@ -23,6 +23,7 @@
             </div>
         </div>
         <button type="button" class="btn btn-sm btn-outline-primary add-set-btn">Add Set</button>
+        <button type="button" class="btn btn-sm btn-outline-primary add-warmupset-btn">Add Warmup</button>
         
         <div class="set-template" style="display: none;">
             <div class="set-row row mb-2">
@@ -40,10 +41,26 @@
                 </div>
             </div>
         </div>
+        <div class="warmup-template" style="display: none;">
+            <div class="set-row warmup row mb-2">
+                <div class="col-md-2">
+                    <label>Warm-up</label>
+                </div>
+                <div class="col-md-4">
+                    <input type="number" class="form-control" placeholder="Reps" min="1">
+                </div>
+                <div class="col-md-4">
+                    <input type="number" class="form-control" placeholder="Weight (kg)" step="0.5" min="0">
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-sm btn-outline-danger remove-set-btn">×</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-<script>
+@* <script>
 document.addEventListener('DOMContentLoaded', function() {
     function updateSetNumbers(container) {
         const setRows = container.querySelectorAll('.set-row');
@@ -77,4 +94,4 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
-</script>
+</script> *@

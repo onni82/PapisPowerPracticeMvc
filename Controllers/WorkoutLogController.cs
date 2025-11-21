@@ -84,10 +84,24 @@ namespace PapisPowerPracticeMvc.Controllers
         public async Task<IActionResult> Create([FromForm] string workoutData)
         {
 
-            
-            if (!string.IsNullOrEmpty(workoutData))
+
+            if (string.IsNullOrEmpty(workoutData))
             {
-                _logger.LogInformation("Processing workout data...");
+                TempData["Error"] = "No workout data received!";
+                return RedirectToAction("WorkoutLog");
+            }
+
+            _logger.LogInformation("Processing workout data...");
+            _logger.LogInformation(workoutData);
+
+            var exercises = System.Text.Json.JsonSerializer.Deserialize<
+                List<CreateWorkoutExerciseDTO>>(workoutData);
+
+            if(exercises == null || exercises.Count == 0)
+            {
+                TempData["Message"] = "Workout contains no exercises";
+                return RedirectToAction("WorkoutLog");
+            }   
                 var startTimeStr = HttpContext.Session.GetString("WorkoutStartTime");
                 var startTime = DateTime.TryParse(startTimeStr, out var parsedStartTime) ? parsedStartTime : DateTime.Now.AddHours(-1);
                 
@@ -95,7 +109,8 @@ namespace PapisPowerPracticeMvc.Controllers
                 {
                     StartTime = startTime,
                     EndTime = DateTime.Now,
-                    Notes = workoutData
+                    Notes = null,
+                    Exercises = exercises
                 };
                 
                 _logger.LogInformation($"About to call API with DTO: {System.Text.Json.JsonSerializer.Serialize(createWorkoutLogDTO)}");
@@ -109,7 +124,7 @@ namespace PapisPowerPracticeMvc.Controllers
                 
                 HttpContext.Session.Remove("CurrentWorkoutId");
                 HttpContext.Session.Remove("WorkoutStartTime");
-            }
+            
             TempData["Message"] = "Workout saved successfully!";
             return RedirectToAction("WorkoutLog");
         }
