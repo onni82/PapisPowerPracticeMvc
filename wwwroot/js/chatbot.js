@@ -1,7 +1,6 @@
 class Chatbot {
     constructor() {
         this.isOpen = false;
-        this.storageKey = 'chatSessionId';
         this.init();
     }
 
@@ -56,14 +55,10 @@ class Chatbot {
     }
 
     async loadHistoryIfAny() {
-        const sessionId = localStorage.getItem(this.storageKey);
         const messagesContainer = document.getElementById('chatbotMessages');
 
-        if (!sessionId) {
-            return;
-        }
-
         // show a simple loading indicator
+        messagesContainer.innerHTML = '';
         const loadingDiv = document.createElement('div');
         loadingDiv.className = 'message bot loading';
         loadingDiv.textContent = 'Loading conversation…';
@@ -71,9 +66,10 @@ class Chatbot {
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
         try {
-            const response = await fetch(`/Chat/Session/${encodeURIComponent(sessionId)}`, {
+            const response = await fetch('/Chat/Messages', {
                 method: 'GET',
-                headers: { 'Accept': 'application/json' }
+                headers: { 'Accept': 'application/json' },
+                credentials: 'same-origin' // forward cookies if api uses cookie auth
             });
 
             if (!response.ok) {
@@ -98,7 +94,6 @@ class Chatbot {
         } catch (err) {
             this.addMessage(`Error loading history: ${err.message}`, 'bot');
         } finally {
-            // ensure loading indicator removed if still present
             const loading = messagesContainer.querySelector('.loading');
             if (loading) loading.remove();
         }
@@ -116,26 +111,21 @@ class Chatbot {
         sendBtn.disabled = true;
 
         try {
-            const sessionId = localStorage.getItem(this.storageKey);
-            const payload = {
-                sessionId: sessionId ? sessionId : null,
-                message: message
-            };
+            const payload = { message };
 
             const response = await fetch('/Chat/SendMessage', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 },
+                credentials: 'same-origin', // forward cookies or same-origin auth
                 body: JSON.stringify(payload)
             });
 
             const data = await response.json();
 
             if (data && data.success) {
-                if (data.sessionId) {
-                    localStorage.setItem(this.storageKey, data.sessionId);
-                }
                 this.addMessage(data.assistant, 'bot');
             } else {
                 const err = (data && data.error) ? data.error : 'Unknown error';
