@@ -15,15 +15,15 @@ class Chatbot {
         widget.innerHTML = `
             <div class="chatbot-container" id="chatbotContainer" style="display:none;">
                 <div class="chatbot-header">
-                    Fitness Assistant
+                    Träningsassistent
                 </div>
                 <div class="chatbot-messages" id="chatbotMessages">
                     <div class="message bot">
-                        Hi! I'm your fitness assistant. How can I help you today?
+                        Hej! Jag är din träningsassistent. Hur kan jag hjälpa dig idag?
                     </div>
                 </div>
                 <div class="chatbot-input">
-                    <input type="text" id="chatbotInput" placeholder="Type your message...">
+                    <input type="text" id="chatbotInput" placeholder="Skriv ditt meddelande...">
                     <button id="chatbotSend">➤</button>
                 </div>
             </div>
@@ -61,7 +61,7 @@ class Chatbot {
         messagesContainer.innerHTML = '';
         const loadingDiv = document.createElement('div');
         loadingDiv.className = 'message bot loading';
-        loadingDiv.textContent = 'Loading conversation…';
+        loadingDiv.textContent = 'Läser in konversation…';
         messagesContainer.appendChild(loadingDiv);
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
@@ -74,7 +74,7 @@ class Chatbot {
 
             if (!response.ok) {
                 const text = await response.text();
-                loadingDiv.textContent = `Error loading history: ${text}`;
+                loadingDiv.textContent = `Fel vid inläsning av historik: ${text}`;
                 return;
             }
 
@@ -83,7 +83,7 @@ class Chatbot {
             // clear existing messages and render history
             messagesContainer.innerHTML = '';
             if (!Array.isArray(data) || data.length === 0) {
-                messagesContainer.innerHTML = `<div class="message bot">Hi! I'm your fitness assistant. How can I help you today?</div>`;
+                messagesContainer.innerHTML = `<div class="message bot">Hej! Jag är din träningsassistent. Hur kan jag hjälpa dig idag?</div>`;
                 return;
             }
 
@@ -92,7 +92,7 @@ class Chatbot {
                 this.addMessage(m.message, sender);
             });
         } catch (err) {
-            this.addMessage(`Error loading history: ${err.message}`, 'bot');
+            this.addMessage(`Fel vid inläsning av historik: ${err.message}`, 'bot');
         } finally {
             const loading = messagesContainer.querySelector('.loading');
             if (loading) loading.remove();
@@ -128,11 +128,11 @@ class Chatbot {
             if (data && data.success) {
                 this.addMessage(data.assistant, 'bot');
             } else {
-                const err = (data && data.error) ? data.error : 'Unknown error';
-                this.addMessage(`Error: ${err}`, 'bot');
+                const err = (data && data.error) ? data.error : 'Okänt fel';
+                this.addMessage(`Fel: ${err}`, 'bot');
             }
         } catch (error) {
-            this.addMessage(`Error: ${error.message}`, 'bot');
+            this.addMessage(`Fel: ${error.message}`, 'bot');
         } finally {
             input.disabled = false;
             sendBtn.disabled = false;
