@@ -16,15 +16,15 @@ namespace PapisPowerPracticeMvc.Areas.Admin.Controllers
             _muscleGroupService = muscleGroupService;
         }
 
-		// Lista alla muskelgrupper
-		public async Task<IActionResult> Index()
+        // Lista alla muskelgrupper
+        public async Task<IActionResult> Index()
         {
             var groups = await _muscleGroupService.GetAllAsync();
             return View(groups);
         }
 
-		// GET: Admin/MuscleGroups/Edit/5
-		public async Task<IActionResult> Edit(int id)
+        // GET: Admin/MuscleGroups/Edit/5
+        public async Task<IActionResult> Edit(int id)
         {
             var group = await _muscleGroupService.GetByIdAsync(id);
             
@@ -36,8 +36,8 @@ namespace PapisPowerPracticeMvc.Areas.Admin.Controllers
             return View(group);
         }
 
-		// POST: Admin/MuscleGroups/Edit/5
-		[HttpPost]
+        // POST: Admin/MuscleGroups/Edit/5
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, MuscleGroupViewModel model)
         {
@@ -58,15 +58,15 @@ namespace PapisPowerPracticeMvc.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-		// GET: Admin/MuscleGroups/Create
-		[HttpGet]
+        // GET: Admin/MuscleGroups/Create
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
 
-		// POST: Admin/MuscleGroups/Create
-		[HttpPost]
+        // POST: Admin/MuscleGroups/Create
+        [HttpPost]
         public async Task<IActionResult> Create(MuscleGroupViewModel model)
         {
             if (!ModelState.IsValid)

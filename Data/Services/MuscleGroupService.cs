@@ -43,20 +43,20 @@ namespace PapisPowerPracticeMvc.Data.Services
             {
                 // API:t kanske inte nås
                 return null;
-			}
-			catch (NotSupportedException)
-			{
+            }
+            catch (NotSupportedException)
+            {
                 // Svaret är inte JSON
                 return null;
-			}
-			catch (JsonException)
-			{
-				// JSON kunde inte deserialiseras
+            }
+            catch (JsonException)
+            {
+                // JSON kunde inte deserialiseras
                 return null;
-			}
-		}
+            }
+        }
 
-		public async Task<bool> CreateAsync(MuscleGroupViewModel muscleGroup)
+        public async Task<bool> CreateAsync(MuscleGroupViewModel muscleGroup)
         {
             var response = await _httpClient.PostAsJsonAsync("MuscleGroup", muscleGroup);
             return response.IsSuccessStatusCode;
