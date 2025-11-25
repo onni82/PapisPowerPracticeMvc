@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.General;
 
 namespace PapisPowerPracticeMvc.Models
 {
@@ -16,6 +17,15 @@ namespace PapisPowerPracticeMvc.Models
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public ICollection<Exercise> Exercises { get; set; } = new List<Exercise>();
+    }
+
+    public class WorkoutLogVM
+    {
+        public int Id { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime? EndTime { get; set; }
+        public string? Notes { get; set; }
+        public List<WorkoutExerciseViewModel> Exercises { get; set; } = new();
     }
 
     public class WorkoutLog
@@ -67,7 +77,7 @@ namespace PapisPowerPracticeMvc.Models
     public class WorkoutExerciseViewModel
     {
         public int ExerciseId { get; set; }
-        public string ExerciseName { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
         public List<WorkoutSetViewModel> Sets { get; set; } = new List<WorkoutSetViewModel>();
     }
 

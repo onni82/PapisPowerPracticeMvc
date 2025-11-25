@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PapisPowerPracticeMvc.Data.Services.IService;
 using PapisPowerPracticeMvc.Models;
 using PapisPowerPracticeMvc.ViewModels;
@@ -40,6 +41,21 @@ namespace PapisPowerPracticeMvc.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> WorkoutlogsForUser()
+        {
+            var token = Request.Cookies["jwt"];
+
+
+
+            if (token == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+            var logs = await _workoutLogServices.WorkoutLogsForUserAsync(token);
+            return View(logs);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> GetExercisesByMuscleGroup(int muscleGroupId)
         {
             // Get the muscle group name first
@@ -72,7 +88,7 @@ namespace PapisPowerPracticeMvc.Controllers
                 var entry = new WorkoutExerciseViewModel
                 {
                     ExerciseId = exercise.Id,
-                    ExerciseName = exercise.Name,
+                    Name = exercise.Name,
                     Sets = new List<WorkoutSetViewModel> { new WorkoutSetViewModel() }
                 };
                 return PartialView("_WorkoutEntry", entry);
