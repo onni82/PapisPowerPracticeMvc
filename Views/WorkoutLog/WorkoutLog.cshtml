@@ -78,6 +78,9 @@
                 successAlert.style.display = 'none';
             }, 3000);
         }
+        
+        // Restore workout data from session storage
+        restoreWorkoutData();
 
         // Handle muscle group selection
         document.getElementById('muscleGroupSelect').addEventListener('change', function() {
@@ -129,6 +132,7 @@
                     container.insertAdjacentHTML('beforeend', data);
                     document.getElementById('exerciseSelect').value = '';
                     document.getElementById('saveWorkoutSection').style.display = 'block';
+                    saveWorkoutData();
                 })
                 .catch(error => {
                     alert('Error adding exercise');
@@ -167,9 +171,62 @@
 
             if (e.target.classList.contains('remove-exercise-btn')) {
                 e.target.closest('.workout-entry').remove();
+                saveWorkoutData();
+            }
+        });
+        
+        // Save data when inputs change
+        document.addEventListener('input', function(e) {
+            if (e.target.matches('.workout-entry input')) {
+                saveWorkoutData();
             }
         });
     });
+    
+    function saveWorkoutData() {
+        const workoutEntries = document.getElementById('workoutEntries');
+        if (workoutEntries) {
+            const data = {
+                html: workoutEntries.innerHTML,
+                values: []
+            };
+            
+            // Save input values
+            workoutEntries.querySelectorAll('input').forEach((input, index) => {
+                data.values.push({
+                    index: index,
+                    value: input.value
+                });
+            });
+            
+            sessionStorage.setItem('workoutData', JSON.stringify(data));
+            if (workoutEntries.children.length > 0) {
+                sessionStorage.setItem('showSaveSection', 'true');
+            }
+        }
+    }
+    
+    function restoreWorkoutData() {
+        const savedDataStr = sessionStorage.getItem('workoutData');
+        const showSave = sessionStorage.getItem('showSaveSection');
+        
+        if (savedDataStr) {
+            const savedData = JSON.parse(savedDataStr);
+            document.getElementById('workoutEntries').innerHTML = savedData.html;
+            
+            // Restore input values
+            const inputs = document.getElementById('workoutEntries').querySelectorAll('input');
+            savedData.values.forEach(item => {
+                if (inputs[item.index]) {
+                    inputs[item.index].value = item.value;
+                }
+            });
+        }
+        
+        if (showSave === 'true') {
+            document.getElementById('saveWorkoutSection').style.display = 'block';
+        }
+    }
 
     function updateSetNumbers(container)
         {
@@ -237,6 +294,12 @@
         const input2 = document.getElementById('workoutDataInput2');
         if (input1) input1.value = json;
         if (input2) input2.value = json;
+        
+        // Clear session storage after form submission
+        setTimeout(() => {
+            sessionStorage.removeItem('workoutData');
+            sessionStorage.removeItem('showSaveSection');
+        }, 100);
 
     }
     function sortWarmupFirst(container){
