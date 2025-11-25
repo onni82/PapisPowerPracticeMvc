@@ -9,12 +9,17 @@
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background: #007bff;
+    background: linear-gradient(45deg, #ff6b35, #e74c3c);
     color: white;
     border: none;
     font-size: 24px;
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease;
+}
+
+.chatbot-toggle:hover {
+    transform: scale(1.1);
 }
 
 .chatbot-container {
@@ -31,7 +36,7 @@
 }
 
 .chatbot-header {
-    background: #007bff;
+    background: linear-gradient(45deg, #ff6b35, #e74c3c);
     color: white;
     padding: 15px;
     border-radius: 10px 10px 0 0;
@@ -53,7 +58,7 @@
 }
 
 .message.user {
-    background: #007bff;
+    background: linear-gradient(45deg, #ff6b35, #e74c3c);
     color: white;
     margin-left: auto;
 }
@@ -79,11 +84,16 @@
 
 .chatbot-input button {
     margin-left: 10px;
-    background: #007bff;
+    background: linear-gradient(45deg, #ff6b35, #e74c3c);
     color: white;
     border: none;
     border-radius: 50%;
     width: 40px;
     height: 40px;
     cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.chatbot-input button:hover {
+    transform: scale(1.1);
 }

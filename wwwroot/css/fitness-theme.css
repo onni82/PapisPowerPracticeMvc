@@ -1,0 +1,212 @@
+/* Fitness Theme CSS */
+:root {
+    --primary-color: #ff6b35;
+    --secondary-color: #2c3e50;
+    --accent-color: #e74c3c;
+    --success-color: #27ae60;
+    --warning-color: #f39c12;
+    --dark-bg: #1a1a1a;
+    --light-bg: #f8f9fa;
+    --text-light: #ecf0f1;
+    --text-dark: #2c3e50;
+}
+
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    margin: 20px;
+}
+
+/* Header Styling */
+.navbar {
+    background: rgba(44, 62, 80, 0.95) !important;
+    backdrop-filter: blur(10px);
+    border: none !important;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+}
+
+.navbar-brand {
+    color: var(--primary-color) !important;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.navbar-nav .nav-link {
+    color: var(--text-light) !important;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+    color: var(--primary-color) !important;
+}
+
+/* Main Content */
+main {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    backdrop-filter: blur(10px);
+}
+
+/* Cards and Components */
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card-header {
+    background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+    color: white;
+    border-radius: 15px 15px 0 0 !important;
+    font-weight: bold;
+}
+
+/* Buttons */
+.btn-primary {
+    background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+    border: none;
+    border-radius: 25px;
+    padding: 10px 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+}
+
+.btn-success {
+    background: linear-gradient(45deg, var(--success-color), #2ecc71);
+    border: none;
+    border-radius: 25px;
+    padding: 10px 25px;
+    font-weight: 600;
+}
+
+.btn-danger {
+    background: linear-gradient(45deg, var(--accent-color), #c0392b);
+    border: none;
+    border-radius: 25px;
+    padding: 10px 25px;
+    font-weight: 600;
+}
+
+/* Form Controls */
+.form-control {
+    border-radius: 10px;
+    border: 2px solid #e9ecef;
+    padding: 12px 15px;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+}
+
+/* Workout Entry Styling */
+.workout-entry {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-left: 5px solid var(--primary-color);
+}
+
+.set-row {
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+/* Alerts */
+.alert-success {
+    background: linear-gradient(45deg, var(--success-color), #2ecc71);
+    border: none;
+    color: white;
+    border-radius: 10px;
+}
+
+.alert-info {
+    background: linear-gradient(45deg, #3498db, #2980b9);
+    border: none;
+    color: white;
+    border-radius: 10px;
+}
+
+/* Footer */
+.footer {
+    background: rgba(44, 62, 80, 0.95);
+    color: var(--text-light);
+    border-top: none;
+    margin-top: auto;
+    padding: 20px 0;
+}
+
+.footer a {
+    color: var(--primary-color);
+}
+
+/* Muscle Group Selection */
+#muscleGroupSelect, #exerciseSelect {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    main {
+        margin: 10px;
+        padding: 20px;
+    }
+    
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+}
+
+/* Animation for page load */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+main {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* Fitness Icons */
+h1, h2, h3 {
+    color: var(--secondary-color);
+    font-weight: bold;
+}
+
+h1::before {
+    content: "💪 ";
+    margin-right: 10px;
+}
+
+/* Workout Log specific styling */
+.workout-entry h5::before {
+    content: "🏋️ ";
+    margin-right: 5px;
+}

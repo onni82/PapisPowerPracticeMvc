@@ -1,0 +1,246 @@
+/* Dark Gym Theme CSS */
+:root {
+    --primary-color: #00d4ff;
+    --secondary-color: #ff0080;
+    --accent-color: #00ff88;
+    --dark-bg: #0a0a0a;
+    --card-bg: #1a1a1a;
+    --text-light: #ffffff;
+    --text-muted: #b0b0b0;
+    --border-color: #333;
+}
+
+body {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-light);
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+/* Header Styling */
+.navbar {
+    background: rgba(10, 10, 10, 0.95) !important;
+    backdrop-filter: blur(15px);
+    border-bottom: 2px solid var(--primary-color) !important;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+}
+
+.navbar-brand {
+    color: var(--primary-color) !important;
+    font-weight: bold;
+    font-size: 1.5rem;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+.navbar-nav .nav-link {
+    color: var(--text-light) !important;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+    color: var(--primary-color) !important;
+    text-shadow: 0 0 5px rgba(0, 212, 255, 0.5);
+}
+
+/* Main Content */
+main {
+    background: rgba(26, 26, 26, 0.8);
+    margin: 20px;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.1);
+    border: 1px solid var(--border-color);
+}
+
+/* Cards and Components */
+.card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
+    border-color: var(--primary-color);
+}
+
+.card-header {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border-radius: 15px 15px 0 0 !important;
+    font-weight: bold;
+    border: none;
+}
+
+/* Buttons */
+.btn-primary {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    border: none;
+    border-radius: 25px;
+    padding: 12px 30px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 25px rgba(0, 212, 255, 0.5);
+}
+
+.btn-success {
+    background: linear-gradient(45deg, var(--accent-color), #00cc70);
+    border: none;
+    border-radius: 25px;
+    padding: 12px 30px;
+    font-weight: 600;
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+}
+
+.btn-danger {
+    background: linear-gradient(45deg, var(--secondary-color), #cc0066);
+    border: none;
+    border-radius: 25px;
+    padding: 12px 30px;
+    font-weight: 600;
+    box-shadow: 0 0 15px rgba(255, 0, 128, 0.3);
+}
+
+/* Form Controls */
+.form-control {
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    padding: 12px 15px;
+    color: var(--text-light);
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    background: var(--card-bg);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+    color: var(--text-light);
+}
+
+.form-control::placeholder {
+    color: var(--text-muted);
+}
+
+/* Labels */
+label {
+    color: var(--text-light);
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+/* Workout Entry Styling */
+.workout-entry {
+    background: linear-gradient(135deg, var(--card-bg) 0%, #2a2a2a 100%);
+    border-left: 4px solid var(--accent-color);
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+}
+
+.set-row {
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+}
+
+/* Alerts */
+.alert-success {
+    background: linear-gradient(45deg, var(--accent-color), #00cc70);
+    border: none;
+    color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+}
+
+.alert-info {
+    background: linear-gradient(45deg, var(--primary-color), #0099cc);
+    border: none;
+    color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+}
+
+/* Footer */
+.footer {
+    background: rgba(10, 10, 10, 0.95);
+    color: var(--text-light);
+    border-top: 2px solid var(--primary-color);
+    margin-top: auto;
+    padding: 20px 0;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+}
+
+.footer a {
+    color: var(--primary-color);
+}
+
+/* Headings */
+h1, h2, h3 {
+    color: var(--text-light);
+    font-weight: bold;
+}
+
+h1 {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+h1::before {
+    content: "⚡ ";
+    margin-right: 10px;
+    -webkit-text-fill-color: var(--accent-color);
+}
+
+/* Muscle Group Selection */
+#muscleGroupSelect, #exerciseSelect {
+    background: var(--card-bg);
+    color: var(--text-light);
+    border: 2px solid var(--border-color);
+}
+
+#muscleGroupSelect option, #exerciseSelect option {
+    background: var(--card-bg);
+    color: var(--text-light);
+}
+
+/* Neon glow effects */
+.workout-entry h5::before {
+    content: "🔥 ";
+    margin-right: 5px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    main {
+        margin: 10px;
+        padding: 20px;
+    }
+}
+
+/* Animation */
+@keyframes neonPulse {
+    0%, 100% { box-shadow: 0 0 15px rgba(0, 212, 255, 0.3); }
+    50% { box-shadow: 0 0 25px rgba(0, 212, 255, 0.6); }
+}
+
+.btn-primary:hover {
+    animation: neonPulse 2s infinite;
+}
