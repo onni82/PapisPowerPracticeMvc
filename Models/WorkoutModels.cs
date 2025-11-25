@@ -26,7 +26,7 @@ namespace PapisPowerPracticeMvc.Models
         public string? Notes { get; set; }
         public string UserId { get; set; } = string.Empty;
         public IdentityUser User { get; set; } = null!;
-        public ICollection<WorkoutExercise> WorkoutExercises { get; set; } = new List<WorkoutExercise>();
+        public ICollection<WorkoutExercise> Exercises { get; set; } = new List<WorkoutExercise>();
     }
 
     public class WorkoutExercise
@@ -39,6 +39,12 @@ namespace PapisPowerPracticeMvc.Models
         public ICollection<WorkoutSet> Sets { get; set; } = new List<WorkoutSet>();
     }
 
+    public enum SetType
+    {
+        Warmup = 0,
+        Working = 1
+    }
+
     public class WorkoutSet
     {
         public int Id { get; set; }
@@ -46,6 +52,7 @@ namespace PapisPowerPracticeMvc.Models
         public WorkoutExercise WorkoutExercise { get; set; } = null!;
         public int Reps { get; set; }
         public decimal Weight { get; set; }
+        public SetType Type { get; set; } = SetType.Working;
     }
 
     public class WorkoutLogViewModel
@@ -68,5 +75,6 @@ namespace PapisPowerPracticeMvc.Models
     {
         public int Reps { get; set; }
         public decimal Weight { get; set; }
+        public bool IsWarmup { get; set; }
     }
 }
