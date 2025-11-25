@@ -32,9 +32,9 @@
                 <option value="">Select a muscle group first...</option>
             </select>
         </div>
-        <button id="addExerciseBtn" class="btn btn-primary" disabled>Lägg till övning</button>
+        <button id="addExerciseBtn" class="btn btn-primary" disabled>LÃ¤gg till Ã¶vning</button>
         <a asp-area="" asp-controller="WorkoutLog" asp-action="WorkoutLogsForUser"  class="btn btn-primary">
-            TräningsLog
+            TrÃ¤ningslog
         </a>
     </div>
 
@@ -135,6 +135,10 @@
                     container.insertAdjacentHTML('beforeend', data);
                     document.getElementById('exerciseSelect').value = '';
                     document.getElementById('saveWorkoutSection').style.display = 'block';
+                    
+                    // Update workout status to show "Workout In Progress"
+                    updateWorkoutStatus(true);
+                    
                     saveWorkoutData();
                 })
                 .catch(error => {
@@ -189,20 +193,16 @@
     function saveWorkoutData() {
         const workoutEntries = document.getElementById('workoutEntries');
         if (workoutEntries) {
-            const data = {
-                html: workoutEntries.innerHTML,
-                values: []
-            };
+            // Store HTML using outerHTML to preserve encoding
+            sessionStorage.setItem('workoutHTML', workoutEntries.outerHTML);
             
-            // Save input values
-            workoutEntries.querySelectorAll('input').forEach((input, index) => {
-                data.values.push({
-                    index: index,
-                    value: input.value
-                });
+            // Store input values as simple array
+            const values = [];
+            workoutEntries.querySelectorAll('input').forEach(input => {
+                values.push(input.value);
             });
+            sessionStorage.setItem('workoutValues', values.join('|||'));
             
-            sessionStorage.setItem('workoutData', JSON.stringify(data));
             if (workoutEntries.children.length > 0) {
                 sessionStorage.setItem('showSaveSection', 'true');
             }
@@ -210,24 +210,48 @@
     }
     
     function restoreWorkoutData() {
-        const savedDataStr = sessionStorage.getItem('workoutData');
+        const savedHTML = sessionStorage.getItem('workoutHTML');
+        const savedValues = sessionStorage.getItem('workoutValues');
         const showSave = sessionStorage.getItem('showSaveSection');
         
-        if (savedDataStr) {
-            const savedData = JSON.parse(savedDataStr);
-            document.getElementById('workoutEntries').innerHTML = savedData.html;
+        if (savedHTML) {
+            // Create a temporary container to parse the HTML properly
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = savedHTML;
+            const restoredContent = tempDiv.firstChild;
+            
+            // Replace the entire workoutEntries element
+            const workoutEntries = document.getElementById('workoutEntries');
+            workoutEntries.parentNode.replaceChild(restoredContent, workoutEntries);
             
             // Restore input values
-            const inputs = document.getElementById('workoutEntries').querySelectorAll('input');
-            savedData.values.forEach(item => {
-                if (inputs[item.index]) {
-                    inputs[item.index].value = item.value;
-                }
-            });
+            if (savedValues) {
+                const values = savedValues.split('|||');
+                const inputs = document.getElementById('workoutEntries').querySelectorAll('input');
+                inputs.forEach((input, index) => {
+                    if (values[index]) {
+                        input.value = values[index];
+                    }
+                });
+            }
+            
+            // Update workout status if there are exercises
+            updateWorkoutStatus(true);
         }
         
         if (showSave === 'true') {
             document.getElementById('saveWorkoutSection').style.display = 'block';
+        }
+    }
+    
+    function updateWorkoutStatus(inProgress) {
+        const statusSpan = document.querySelector('.d-flex.justify-content-between.align-items-center.mb-3 > div > span');
+        if (statusSpan) {
+            if (inProgress) {
+                statusSpan.textContent = 'Workout In Progress';
+            } else {
+                statusSpan.textContent = 'No Active Workout';
+            }
         }
     }
 
@@ -300,7 +324,8 @@
         
         // Clear session storage after form submission
         setTimeout(() => {
-            sessionStorage.removeItem('workoutData');
+            sessionStorage.removeItem('workoutHTML');
+            sessionStorage.removeItem('workoutValues');
             sessionStorage.removeItem('showSaveSection');
         }, 100);
 
