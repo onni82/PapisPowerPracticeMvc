@@ -1,5 +1,16 @@
 ﻿# Papi's Power Practice MVC
 
+Live demo
+---------
+https://papispowerpracticemvc.azurewebsites.net
+
+Project description
+-------------------
+Papi's Power Practice MVC is a Razor Pages web application designed to support people who enjoy going to the gym. The app allows users to:
+- Log and track training sessions (workouts).
+- Get suggested exercises tailored to their goals.
+- View guidance and instructions on how to perform exercises safely and effectively.
+
 Summary
 -------
 This repository is a Razor Pages web application targeting .NET 8 (project name: `PapisPowerPracticeMvc`). The README below documents setup, run, and troubleshooting steps, plus a short analysis and assumptions because repository files were not inspected directly during generation.
