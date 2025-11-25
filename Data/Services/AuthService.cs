@@ -1,4 +1,5 @@
-﻿using PapisPowerPracticeMvc.Data.Services.IService;
+﻿using NuGet.Common;
+using PapisPowerPracticeMvc.Data.Services.IService;
 using PapisPowerPracticeMvc.Models.Auth.Request;
 using PapisPowerPracticeMvc.Models.Auth.Response;
 
@@ -22,6 +23,7 @@ namespace PapisPowerPracticeMvc.Data.Services
             {
                 return null;
             }
+            
 
             return await response.Content.ReadFromJsonAsync<LoginResponse>();
         }
