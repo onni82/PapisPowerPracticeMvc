@@ -97,13 +97,24 @@ namespace PapisPowerPracticeMvc.Controllers
         }
 
         [HttpPost]
+        public IActionResult EndWorkout()
+        {
+            // Clear session data without saving
+            HttpContext.Session.Remove("CurrentWorkoutId");
+            HttpContext.Session.Remove("WorkoutStartTime");
+            
+            TempData["Message"] = "Träning avslutad utan att spara.";
+            return RedirectToAction("WorkoutLog");
+        }
+
+        [HttpPost]
         public async Task<IActionResult> Create([FromForm] string workoutData)
         {
 
 
             if (string.IsNullOrEmpty(workoutData))
             {
-                TempData["Error"] = "No workout data received!";
+                TempData["Error"] = "Ingen träningsdata mottagen!";
                 return RedirectToAction("WorkoutLog");
             }
 
@@ -115,7 +126,7 @@ namespace PapisPowerPracticeMvc.Controllers
 
             if(exercises == null || exercises.Count == 0)
             {
-                TempData["Message"] = "Workout contains no exercises";
+                TempData["Message"] = "Träningen innehåller inga övningar";
                 return RedirectToAction("WorkoutLog");
             }   
                 var startTimeStr = HttpContext.Session.GetString("WorkoutStartTime");
@@ -141,7 +152,7 @@ namespace PapisPowerPracticeMvc.Controllers
                 HttpContext.Session.Remove("CurrentWorkoutId");
                 HttpContext.Session.Remove("WorkoutStartTime");
             
-            TempData["Message"] = "Workout saved successfully!";
+            TempData["Message"] = "Träningen sparad";
             return RedirectToAction("WorkoutLog");
         }
 
