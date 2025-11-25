@@ -15,11 +15,11 @@
 
 <div class="row">
     <div class="col-md-4">
-        <h3>Add Exercise</h3>
+        <h3>Lägg till övning</h3>
         <div class="form-group mb-3">
-            <label>Select Muscle Group:</label>
+            <label>Välj muskelgrupp:</label>
             <select id="muscleGroupSelect" class="form-control">
-                <option value="">Select a muscle group...</option>
+                <option value="">Välj en muskelgrupp...</option>
                 @foreach (var muscleGroup in Model.MuscleGroups)
                 {
                     <option value="@muscleGroup.Id">@muscleGroup.Name</option>
@@ -27,9 +27,9 @@
             </select>
         </div>
         <div class="form-group mb-3">
-            <label>Select Exercise:</label>
+            <label>Välj övning:</label>
             <select id="exerciseSelect" class="form-control" disabled>
-                <option value="">Select a muscle group first...</option>
+                <option value="">Välj en muskelgrupp först...</option>
             </select>
         </div>
         <button id="addExerciseBtn" class="btn btn-primary" disabled>Lägg till övning</button>
@@ -40,20 +40,13 @@
 
     <div class="col-md-8">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3>Today's Workout</h3>
+            <h3>Dagens träning</h3>
             <div>
-                @if (Model.WorkoutLogId.HasValue)
-                {
-                    <span>Workout In Progress</span>
-                    <form method="post" action="@Url.Action("EndWorkout")" style="display: inline;" onsubmit="collectWorkoutData(event)">
-                        <input type="hidden" name="workoutData" id="workoutDataInput">
-                        <button type="submit" class="btn btn-danger ms-2">End Workout</button>
-                    </form>
-                }
-                else
-                {
-                    <span>No Active Workout</span>
-                }
+                <span id="workoutStatus">Ingen aktiv träning</span>
+                <form method="post" action="@Url.Action("EndWorkout")" style="display: none;" id="endWorkoutForm" onsubmit="clearWorkoutData(event)">
+                    <input type="hidden" name="workoutData" id="workoutDataInput">
+                    <button type="submit" class="btn btn-danger ms-2">Avsluta träning</button>
+                </form>
             </div>
         </div>
         @if (Model.WorkoutLogId.HasValue)
@@ -66,7 +59,7 @@
             <form method="post" action="@Url.Action("Create")" onsubmit="collectWorkoutData(event)">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="workoutData" id="workoutDataInput2">
-                <button type="submit" class="btn btn-success">Save Workout</button>
+                <button type="submit" class="btn btn-success">Spara träning</button>
             </form>
         </div>
     </div>
@@ -95,7 +88,7 @@
                 fetch(`@Url.Action("GetExercisesByMuscleGroup")?muscleGroupId=${muscleGroupId}`)
                     .then(response => response.json())
                     .then(exercises => {
-                        exerciseSelect.innerHTML = '<option value="">Select an exercise...</option>';
+                        exerciseSelect.innerHTML = '<option value="">Välj en övning...</option>';
                         exercises.forEach(exercise => {
                             exerciseSelect.innerHTML += `<option value="${exercise.id}">${exercise.name}</option>`;
                         });
@@ -103,10 +96,10 @@
                     })
                     .catch(error => {
                         console.error('Error loading exercises:', error);
-                        exerciseSelect.innerHTML = '<option value="">Error loading exercises</option>';
+                        exerciseSelect.innerHTML = '<option value="">Fel vid laddning av övningar</option>';
                     });
             } else {
-                exerciseSelect.innerHTML = '<option value="">Select a muscle group first...</option>';
+                exerciseSelect.innerHTML = '<option value="">Välj en muskelgrupp först...</option>';
                 exerciseSelect.disabled = true;
                 addExerciseBtn.disabled = true;
             }
@@ -142,10 +135,10 @@
                     saveWorkoutData();
                 })
                 .catch(error => {
-                    alert('Error adding exercise');
+                    alert('Fel vid tillägg av övning');
                 });
             } else {
-                alert('Please select an exercise');
+                alert('Vänligen välj en övning');
             }
         });
 
@@ -245,12 +238,16 @@
     }
     
     function updateWorkoutStatus(inProgress) {
-        const statusSpan = document.querySelector('.d-flex.justify-content-between.align-items-center.mb-3 > div > span');
-        if (statusSpan) {
+        const statusSpan = document.getElementById('workoutStatus');
+        const endWorkoutForm = document.getElementById('endWorkoutForm');
+        
+        if (statusSpan && endWorkoutForm) {
             if (inProgress) {
-                statusSpan.textContent = 'Workout In Progress';
+                statusSpan.textContent = 'Träning pågår';
+                endWorkoutForm.style.display = 'inline';
             } else {
-                statusSpan.textContent = 'No Active Workout';
+                statusSpan.textContent = 'Ingen aktiv träning';
+                endWorkoutForm.style.display = 'none';
             }
         }
     }
@@ -264,7 +261,7 @@
              rows.forEach(row => {
              const label = row.querySelector('label');
                     if (row.classList.contains("warmup")) {
-                    label.textContent = "Warm-up";
+                    label.textContent = "Uppvärmning";
                     }
                     else{
                         label.textContent = "Set " + counter;
@@ -276,22 +273,34 @@
     function collectWorkoutData(event) {
         console.log('collectWorkoutData called');
 
-
         const exercises = [];
+        const workoutEntries = document.querySelectorAll('.workout-entry');
+        console.log('Found workout entries:', workoutEntries.length);
 
-        document.querySelectorAll('.workout-entry').forEach(entry => {
+        workoutEntries.forEach(entry => {
             const exerciseId = parseInt(entry.getAttribute("data-exercise-id"));
+            console.log('Processing exercise ID:', exerciseId);
+            
             const exercise = {
                 ExerciseId: exerciseId,
                 Sets: []
             };
 
-            entry.querySelectorAll(".set-row").forEach(row => {
-                const reps = row.querySelector('input[placeholder="Reps"]').value;
-                const weight = row.querySelector('input[placeholder*="Weight"]').value;
+            const setRows = entry.querySelectorAll(".set-row");
+            console.log('Found set rows:', setRows.length);
+            
+            setRows.forEach(row => {
+                const repsInput = row.querySelector('input[placeholder="Reps"]');
+                const weightInput = row.querySelector('input[placeholder*="Weight"]');
+                
+                const reps = repsInput ? repsInput.value : '';
+                const weight = weightInput ? weightInput.value : '';
+                
+                console.log('Set data - Reps:', reps, 'Weight:', weight);
                 
                 if(!reps || !weight)
                 {
+                    console.log('Skipping set due to missing reps or weight');
                     return;
                 }
                 
@@ -304,16 +313,16 @@
                 });
 
             });
+            
+            console.log('Exercise sets count:', exercise.Sets.length);
             if(exercise.Sets.length > 0) {
-                    exercises.push(exercise);
-                }
-
-
+                exercises.push(exercise);
+            }
         });
 
         const json = JSON.stringify(exercises);
-
-        console.log("Final json sent to backend");
+        console.log('Total exercises to save:', exercises.length);
+        console.log("Final json sent to backend:");
         console.log(json);
 
         // const workoutData = workoutEntries.join('\n');
@@ -322,14 +331,31 @@
         if (input1) input1.value = json;
         if (input2) input2.value = json;
         
-        // Clear session storage after form submission
+        // Clear session storage and UI after form submission
         setTimeout(() => {
             sessionStorage.removeItem('workoutHTML');
             sessionStorage.removeItem('workoutValues');
             sessionStorage.removeItem('showSaveSection');
+            
+            // Clear the workout entries from the page
+            document.getElementById('workoutEntries').innerHTML = '';
+            document.getElementById('saveWorkoutSection').style.display = 'none';
+            updateWorkoutStatus(false);
         }, 100);
 
     }
+    function clearWorkoutData(event) {
+        // Clear session storage and UI immediately
+        sessionStorage.removeItem('workoutHTML');
+        sessionStorage.removeItem('workoutValues');
+        sessionStorage.removeItem('showSaveSection');
+        
+        // Clear the workout entries from the page
+        document.getElementById('workoutEntries').innerHTML = '';
+        document.getElementById('saveWorkoutSection').style.display = 'none';
+        updateWorkoutStatus(false);
+    }
+    
     function sortWarmupFirst(container){
         const rows = Array.from(container.querySelectorAll('.set-row'));
 
