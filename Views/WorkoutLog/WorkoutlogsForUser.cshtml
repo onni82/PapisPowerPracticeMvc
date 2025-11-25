@@ -1,0 +1,60 @@
+﻿@model IEnumerable<PapisPowerPracticeMvc.Models.WorkoutLogVM>
+
+@{
+    ViewData["Title"] = "Träningslogg";
+}
+
+<h2 class="mb-4">Your Workout Logs</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        No workout logs found.
+    </div>
+}
+else
+{
+    foreach (var log in Model)
+    {
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+
+                <h4 class="card-title mb-2">
+                    Workout on @log.StartTime.ToString("yyyy-MM-dd HH:mm")
+                </h4>
+
+                <p class="text-muted mb-3">
+                    <strong>End:</strong> @(log.EndTime?.ToString("yyyy-MM-dd HH:mm") ?? "Still active")
+                </p>
+
+                @if (!string.IsNullOrWhiteSpace(log.Notes))
+                {
+                    <p><strong>Notes:</strong> @log.Notes</p>
+                }
+
+                <h5 class="mt-4 mb-3">Exercises</h5>
+
+                @foreach (var ex in log.Exercises)
+                {
+                    <div class="mb-3 p-3 border rounded bg-light">
+
+                        <h6 class="mb-2">@ex.Name</h6>
+
+                        <ul class="list-group">
+                            @foreach (var set in ex.Sets)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>
+                                        @set.Reps reps  @set.Weight kg
+                                        @(set.IsWarmup ? "(Warm-up)" : "")
+                                    </span>
+                                </li>
+                            }
+                        </ul>
+
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    }

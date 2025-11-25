@@ -1,5 +1,6 @@
 ﻿using PapisPowerPracticeMvc.Data.Services.IService;
 using PapisPowerPracticeMvc.Models;
+using System.Net.Http.Headers;
 using System.Text.Json;
 
 namespace PapisPowerPracticeMvc.Data.Services
@@ -9,16 +10,49 @@ namespace PapisPowerPracticeMvc.Data.Services
         private readonly HttpClient _httpClient;
         private readonly ILogger<WorkoutLogServices> _logger;
         private readonly IConfiguration _configuration;
+        private readonly JsonSerializerOptions _jsonOptions;
 
         public WorkoutLogServices(HttpClient httpClient, ILogger<WorkoutLogServices> logger, IConfiguration configuration)
         {
             _httpClient = httpClient;
             _logger = logger;
             _configuration = configuration;
+            _jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
         }
 
 
+        public async Task<List<WorkoutLogVM>> WorkoutLogsForUserAsync(string jwtToken)
+        {
+            try
+            {
+                _httpClient.DefaultRequestHeaders.Clear();
+                _httpClient.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", jwtToken);
+                var baseUrl = _configuration["AuthApi:BaseURL"];
 
+                var response = await _httpClient.GetAsync($"{baseUrl}WorkoutLog/WorkoutlogForUser");
+
+                if(!response.IsSuccessStatusCode)
+                {
+                    _logger.LogError("Failed to fetch workout logs: {StatusCode}", response.StatusCode);
+                    return new List<WorkoutLogVM>();
+                }
+
+                var content = await response.Content.ReadAsStringAsync();
+
+                var logs = JsonSerializer.Deserialize<List<WorkoutLogVM>>(content, _jsonOptions)
+                    ?? new List<WorkoutLogVM>();
+                return logs;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to fetch workout logs");
+                return new List<WorkoutLogVM>();
+            }
+        }
         public async Task<bool> SaveWorkoutAsync(CreateWorkoutLogDTO createWorkoutLogDTO, string jwtToken)
         {
             try
